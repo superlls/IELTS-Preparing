@@ -11,17 +11,14 @@
             "id": "ae7fd53ccb93ef70",
             "type": "leaf",
             "state": {
-              "type": "canvas",
+              "type": "markdown",
               "state": {
-                "file": "未命名.canvas",
-                "viewState": {
-                  "x": 0,
-                  "y": 0,
-                  "zoom": 0
-                }
+                "file": "生词本.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-layout-dashboard",
-              "title": "未命名"
+              "icon": "lucide-file",
+              "title": "生词本"
             }
           }
         ]
@@ -188,7 +185,42 @@
   },
   "active": "ae7fd53ccb93ef70",
   "lastOpenFiles": [
-    "生词本.md",
+    "Speaking/Cambridge IELTS 9/Test4/Section4.md",
+    "Speaking/Cambridge IELTS 9/Test4/Section3.md",
+    "Speaking/Cambridge IELTS 9/Test4/Section2.md",
+    "Speaking/Cambridge IELTS 9/Test4/Section1.md",
+    "Speaking/Cambridge IELTS 9/Test3/Section4.md",
+    "Speaking/Cambridge IELTS 9/Test3/Section3.md",
+    "Speaking/Cambridge IELTS 9/Test3/Section2.md",
+    "Speaking/Cambridge IELTS 9/Test3/Section1.md",
+    "Speaking/Cambridge IELTS 9/Test2/Section4.md",
+    "Speaking/Cambridge IELTS 9/Test2/Section3.md",
+    "Speaking/Cambridge IELTS 9/Test2/Section2.md",
+    "Speaking/Cambridge IELTS 9/Test2/Section1.md",
+    "Speaking/Cambridge IELTS 9/Test1/Section4.md",
+    "Speaking/Cambridge IELTS 9/Test1/Section3.md",
+    "Speaking/Cambridge IELTS 9/Test1/Section2.md",
+    "Speaking/Cambridge IELTS 9/Test1/Section1.md",
+    "Speaking/Cambridge IELTS 8/Test4/Section4.md",
+    "Speaking/Cambridge IELTS 8/Test4/Section3.md",
+    "Speaking/Cambridge IELTS 8/Test4/Section2.md",
+    "Speaking/Cambridge IELTS 8/Test4/Section1.md",
+    "Speaking/Cambridge IELTS 8/Test3/Section4.md",
+    "Speaking/Cambridge IELTS 8/Test3/Section3.md",
+    "Speaking/Cambridge IELTS 8/Test3/Section2.md",
+    "Speaking/Cambridge IELTS 8/Test3/Section1.md",
+    "Speaking/Cambridge IELTS 8/Test2/Section4.md",
+    "Speaking/Cambridge IELTS 8/Test2/Section3.md",
+    "Speaking/Cambridge IELTS 9/Test4",
+    "Speaking/Cambridge IELTS 9/Test3",
+    "Speaking/Cambridge IELTS 9/Test2",
+    "Speaking/Cambridge IELTS 9/Test1",
+    "Speaking/Cambridge IELTS 8/Test4",
+    "Speaking/Cambridge IELTS 8/Test3",
+    "Speaking/Cambridge IELTS 8/Test2",
+    "Speaking/Cambridge IELTS 8/Test1",
+    "Speaking/Cambridge IELTS 7/Test4",
+    "Speaking/Cambridge IELTS 7/Test3",
     "未命名.canvas"
   ]
 }
