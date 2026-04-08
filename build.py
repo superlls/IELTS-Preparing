@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """读取 生词本.md，生成 flashcard 网页 index.html"""
 
-import re, json, html
+import re, json, html, subprocess
 from pathlib import Path
 
 DIR = Path(__file__).parent
