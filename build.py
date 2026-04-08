@@ -571,6 +571,24 @@ render();
 </html>'''
 
 
+def deploy():
+    cmds = [
+        ["git", "add", "index.html"],
+        ["git", "commit", "-m", "chore: update flashcards"],
+        ["git", "push"],
+    ]
+    for cmd in cmds:
+        result = subprocess.run(cmd, cwd=DIR, capture_output=True, text=True)
+        if result.returncode != 0:
+            # commit 失败通常是"nothing to commit"，跳过即可
+            if "nothing to commit" in result.stdout + result.stderr:
+                print("无变化，跳过部署")
+                return
+            print(f"部署失败：{result.stderr.strip()}")
+            return
+    print("已部署 → https://superlls.github.io/IELTS-Preparing/")
+
+
 def main():
     text = MD_FILE.read_text(encoding='utf-8')
     cards = parse_vocab(text)
@@ -578,6 +596,7 @@ def main():
     html_content = build_html(cards)
     OUT_FILE.write_text(html_content, encoding='utf-8')
     print(f"已生成 → {OUT_FILE}")
+    deploy()
 
 
 if __name__ == '__main__':
