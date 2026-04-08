@@ -1,59 +1,64 @@
 # Section 1 Review: Support for Carers
 
-## 关键词汇梳理
+## 你标注的难词分析
 
-| 词汇 | 含义 | 掌握度 | 说明 |
-|------|------|--------|------|
-| cheerful | 乐观的/高兴的 | ✓ | 已标注 |
-| carers | 护理者/照顾者 | ✓ | 已标注 |
-| assessment | 评估 | ✓ | 已标注（重点！！！） |
-| eligible | 有资格的/符合条件的 | ✓ | 已标注 |
-| claim | 报销/索赔 | ✓ | 已标注 |
-| once | 一旦 | ✓ | 已标注 |
-| relieved | 宽慰的/放心的 | ⚠️ | 对话中出现，需激活 |
-| responsibilities | 责任/义务 | ⚠️ | 需要记住发音和用法 |
-| particularly | 特别地/尤其 | ⚠️ | 较长的词，需听清 |
-| shopping | 购物 | ✓ | 常用词 |
-| mealtimes | 进食时间/吃饭时间 | ⚠️ | 复合词，需注意 |
-| cope | 应付/处理 | ⚠️ | 短词但重要 |
-| memory | 记忆/内存 | ✓ | 常用词 |
-| physical difficulties | 身体上的困难 | ⚠️ | 短语搭配 |
-| lifting | 提起/抬起 | ⚠️ | 动名词形式 |
-| advice | 建议 | ✓ | 常用词 |
-| avoid | 避免 | ✓ | 常用词 |
-| fall | 摔倒 | ✓ | 常用词 |
-| financially | 经济上/财务上 | ⚠️ | 副词形式，需听清 |
-| transport costs | 交通费用 | ✓ | 短语搭配 |
-| housework | 家务 | ⚠️ | 复合词 |
-| minimize | 最小化/减少 | ⚠️ | 较难的词，需重点关注 |
-| stress | 压力 | ✓ | 常用词 |
+| 词汇 | 含义 | 音标 | 为什么难 | 改进建议 |
+|------|------|------|---------|---------|
+| **cheerful** | 乐观的/高兴的 | /ˈtʃɪrfəl/ | 开头 ch 音，以及 -ful 末尾容易模糊 | 重点：CHEER-ful，与 careful 区分 |
+| **carers** | 护理者/照顾者 | /ˈkerərz/ | 复数形式，末尾 -ers 容易漏 | 与 careers（职业）发音相似，要区分 |
+| **assessment** | 评估 | /əˈsɛsmənt/ | 长词，两个 s 音容易听成一个，中间的 -ess- 容易吞掉 | 拆分：a-SESS-ment，重音在第二音节，a 是弱读 |
+| **eligible** | 有资格的/符合条件的 | /ˈɛlɪdʒəbəl/ | 长词，末尾 -ible 与前面融合容易混淆 | EL-i-ji-bul，中间的 dʒ 音是关键 |
+| **once** | 一旦/曾经 | /wʌns/ | 短词但容易被快速吞掉，与 one 发音接近 | 在"once they've done"语境中，要听清 once 才能理解"一旦完成" |
+| **claim** | 报销/索赔 | /kleɪm/ | 短词，cl- 开头容易与其他词混淆 | claim for = 报销某项费用（重点搭配） |
 
-## 重点词汇（难度较高）
+## 这些词在原文中的出现位置
 
-### 需要重点激活的词
-- **assessment** - 听力中频繁出现，核心词汇
-- **responsibilities** - 长词，容易漏听
-- **particularly** - 副词，可能被快速发音模糊掉
-- **mealtimes** - 复合词，分开听可能理解为两个词
-- **physically** - 副词结尾，需要注意
-- **minimize** - 较难的单词，但这是关键词
+### cheerful
+> "Well, **she's very cheerful** but she needs a lot of help."
+- 描述母亲的性格
 
-### 同义词替换注意
-- support = help（各种同义表达）
-- financial help = money/pay
-- break = rest/time off
+### carers
+> "They realise that **carers** sometimes need time for all the other responsibilities..."
+- 指照顾人的人（照护者）
 
-## 下次精听注意事项
+### assessment
+> "Well, you'd have to have an **assessment** of your mother's needs."
+- **"assessment" 在这段反复出现 3 次**，很重要！
+- 核心概念：需要做一个评估来了解母亲的需求
 
-### 📚 词汇预热建议
-- 做题前预读所有题目，找出生词
-- 关注**表达方式变化**：如"financial support"可能被说成"help with money"
-- **复合词分解**：mealtimes → meal + times
+### once
+> "So **once** they've done this assessment, if I'm eligible, what happens next?"
+- 表示"一旦...就..."的逻辑关系
 
-### 👂 听力技巧
-- **长词不怕**：responsibilities虽然长，但以词根分段听（respons-ibili-ties）
-- **副词识别**：以-ly结尾的词出现频率高，要特别留意
-- **搭配记忆**：claim for / help with / cope with 等短语搭配要牢记
+### eligible
+> "So once they've done this assessment, if I'm **eligible**, what happens next?"
+- 与 assessment 搭配，"一旦评估完成，如果符合资格"
+
+### claim
+> "So could I **claim** for the petrol?"
+- claim for = 报销...费用（短语搭配很重要）
+
+## 改进建议
+
+### 📚 发音激活
+- **cheerful** - 注意开头 CH 音清晰，末尾 -ful 不要连成 -ful-ə
+- **carers** - 末尾 -ers 很关键，复数形式，要听清
+- **assessment** - 这是难点！两个 s 要分开听：a-SESS-ment（重音在 SESS）
+- **eligible** - ELI-JI-BUL，中间的 j 音（dʒ）是识别关键
+- **once** - 虽然短，但在快速语流中容易漏掉，要特别留意 w 音开头
+- **claim** - 短词，CL- 开头要反应快
+
+### 🎯 重点搭配
+- **assessment of** = 对...的评估
+- **claim for** = 报销...（费用）
+- **once they've done** = 一旦他们完成了...
+
+### ⚡ 下次精听重点
+1. **assessment** 是核心词，会重复多次，首次出现时要马上反应
+2. once → eligible → happens next 是逻辑链，要连贯理解
+3. **claim for + 名词** 搭配，听到 claim 后要准备听费用种类
+4. cheerful vs careful 发音易混，在背景中听要区分
+5. carers 是复数，末尾 -s/-rs 音要听清，不要漏掉复数含义
 
 ---
 *生成日期: 2026-04-08*
