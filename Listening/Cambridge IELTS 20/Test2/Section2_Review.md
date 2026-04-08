@@ -1,100 +1,65 @@
 # Section 2 Review: Town Council Volunteer Scheme
 
-## 关键词汇梳理
+## 你标注的难词分析
 
-| 词汇 | 含义 | 掌握度 | 说明 |
-|------|------|--------|------|
-| scheme | 项目/计划 | ✓ | 已标注 |
-| volunteer | 志愿者 | ✓ | 核心词，频繁出现 |
-| residents | 居民 | ✓ | 已标注 |
-| particular | 特定的/特别的 | ✓ | 已标注 |
-| grateful | 感谢的/感恩的 | ⚠️ | 需要激活 |
-| recommendations | 推荐/建议 | ⚠️ | 长词，需听清 |
-| smoothly | 平顺地/顺利地 | ⚠️ | 副词，容易模糊 |
-| concerts | 音乐会 | ✓ | 常用词 |
-| audience | 观众 | ⚠️ | 发音特殊，需注意 |
-| section | 区域/部分 | ✓ | 常用词 |
-| venues | 场地/地点 | ⚠️ | 较难词，复数形式 |
-| associations | 协会/社团 | ⚠️ | 较长的词 |
-| coach | 大巴/教练 | ⚠️ | 一词多义（这里指大巴） |
-| monthly | 每月的 | ✓ | 常见词 |
-| magazine | 杂志 | ✓ | 常用词 |
-| advertising | 广告 | ✓ | 常用词 |
-| summary | 总结/摘要 | ⚠️ | 容易漏听 |
-| retired | 退休的 | ⚠️ | 需要识别词尾-ed发音 |
-| relaxing | 放松 | ⚠️ | 动词-ing形式 |
-| welcome (v.) | 欢迎 | ✓ | 常用词 |
-| essential | 至关重要的/必要的 | ✓ | 已标注（同义替换） |
-| deal with | 处理/应对 | ✓ | 短语搭配 |
-| behaving | 表现/行为 | ⚠️ | -ing形式 |
-| occasionally | 偶尔 | ✓ | 已标注 |
-| flexible | 灵活的 | ⚠️ | 较难词 |
-| outdoors | 户外 | ✓ | 常用词 |
-| timetabling | 安排日程 | ❌ | 生词，需要重点记忆 |
-| duties | 职责/任务 | ⚠️ | 复数形式，容易漏听 |
-| onward | 以后/之后 | ✓ | 已标注 |
-| chat | 聊天/交流 | ✓ | 常用词 |
-| annual | 年度的/每年的 | ⚠️ | 需要激活 |
-| barbecue | 烧烤 | ✓ | 常用词 |
-| forthcoming | 即将到来的/未来的 | ❌ | 较难词，需重点记忆 |
-| canal | 运河/水道 | ⚠️ | 较难词 |
+| 词汇 | 含义 | 音标 | 为什么难 | 改进建议 |
+|------|------|------|---------|---------|
+| **scheme** | 项目/计划 | /skiːm/ | 韵母与 "scream" 容易混淆 | 重复说 scheme scheme，区别于 stream |
+| **particular** | 特定的/特别的 | /pərˈtɪkjələr/ | 长词，多音节，中间的 t 发音容易被吞掉 | 拆分：par-TIC-u-lar，重音在第二音节 |
+| **residents** | 居民 | /ˈrɛzɪdənts/ | 复数形式，末尾 -ts 容易漏听 | 与 residence（住所）区分；注意复数 s 音 |
+| **essential** | 至关重要的/必要的 | /ɪˈsɛnʃəl/ | 开头 e 弱读，整词模糊 | 同义词替换：important / necessary / vital |
+| **occasionally** | 偶尔 | /əˈkeɪʒənəli/ | 长词，副词 -ly 多音节，语速快时容易混 | 词根：occasion + ally，重音在第二音节 |
+| **onward** | 以后/之后 | /ˈɑnwərd/ | 短词但容易被快速吞掉 | 常与 from ... onward 搭配使用 |
 
-## 重点难词（需特别关注）
+## 这些词在原文中的出现位置
 
-### 完全陌生的词
-- **timetabling** - "安排日程表"，关键词
-- **forthcoming** - "即将到来的"，重点出现词
+### scheme
+> "I'm Steve Wainwright, from Elmleigh Town Council, and **I organise the town's volunteer scheme**."
+- 出现在开场白，重要定位词
 
-### 容易漏听的词
-- **recommendations** - 长词，说话快时容易整体漏掉
-- **associations** - 较长的词，需要分段听（asso-ci-ations）
-- **audience** - 发音特殊 /ˈɔːdiəns/，容易听错
-- **venues** - 复数形式，容易与单数混淆
-- **summary** - 虽然常用，但在这个文本中可能一闪而过
+### particular  
+> "Tourists often ask how to get to a **particular** shop..."
+- 表示"特定的、某一家"
 
-### 需要识别的词性变化
-- **retired** - 形容词/过去分词，发音为 /rɪˈtaɪəd/
-- **behaving** - 动词-ing形式
-- **relaxing** - 形容词/动词-ing形式
+### residents
+> "It's free to **residents**, and is paid for by local businesses..."
+- 复数形式，需听清 -s 音
 
-## 同义词替换注意
+### essential
+> "**What's essential**, though, is being able to get on well with other people..."
+- **题目同义替换注意**："What's the most..." → "What's essential"
+- 这两个表述意思相同，一个可能出现在题目，另一个出现在听力文本中
 
-| 原文说法 | 可能的同义替换 |
-|---------|-------------|
-| essential | important, necessary, vital |
-| volunteer | helper, assistant |
-| flexible | adaptable, adjustable |
-| deal with | handle, manage, cope with |
-| put on a show | perform, provide entertainment |
-| depend on | rely on, need |
+### occasionally
+> "...and also to deal with someone who's behaving badly – **as occasionally happens**."
+- 在描述工作中的偶发情况
 
-## 短语搭配整理
+### onward
+> "So we'll be timetabling you for duties the following week, **from the 9th onward**."
+- 表示"从...以后"，常见于时间表达
 
-| 短语 | 含义 | 例句 |
-|------|------|------|
-| get on well with | 与...相处融洽 | deal with someone who's behaving badly |
-| deal with | 处理/应对 | must be able to deal with difficult people |
-| at short notice | 临时地/短期内 | changes at short notice |
-| put on a show | 进行表演 | volunteers put on a show |
-| sign up | 报名/注册 | you can sign up once you start |
+## 改进建议
 
-## 下次精听注意事项
+### 📚 发音激活
+- **scheme** - 反复说几遍，跟原文发音对齐
+- **particular** - 注意中间 t 不要吞掉：par**-t**-ic-u-lar
+- **residents** - 末尾 -s 音很重要，反复听
+- **essential** - 开头是弱读的 i 音，不是清晰的 e
+- **occasionally** - 虽长但节奏是：o-KAY-zhun-a-lee
+- **onward** - 很短，但容易在快速语流中漏掉
 
-### 📚 词汇预热建议
-- **长词拆分听**：recommendations → recom-men-da-tions，不要听成一团
-- **一词多义注意**：coach（这里指大巴，不是教练）、welcome（既是欢迎，也是受欢迎的）
-- **发音特殊词**：audience /ˈɔːdiəns/ 容易误听
+### 🎯 同义替换提醒
+**关键**：题目问 "What's the most important quality..."，听力可能说 "What's **essential**..."
+- essential = important = necessary = vital
+- 在做题前，务必预读题目中的关键词，准备好听同义词
 
-### 👂 听力技巧
-- **副词识别**：-ly结尾的词（smoothly, occasionally, annually）要特别关注
-- **复数形式**：venues, duties, recommendations 频繁出现，注意单复数区别
-- **被动语态**：retired, behaving 这类-ed/-ing形式需要反应迅速
-- **同义替换预判**：题目中如出现 "important"，要准备听 "essential"
-
-### ⚡ 核心建议
-- **timetabling** 和 **forthcoming** 是这个部分的关键词，务必牢记
-- **audiences** 在文中多次出现，切勿漏听
-- 注意说话者的语流——他/她会快速说出一些修饰词，需要保持专注
+### ⚡ 下次精听重点
+1. 听到 "scheme" 时要反应 = 整个项目的名称
+2. "particular" 表示"特定的某一个"
+3. "residents" 复数，要听清末尾
+4. **题目和听力的同义替换**：如果题目问"最重要的"，听力说"essential"
+5. "occasionally" 虽然长，但就是"偶尔、有时候"
+6. "onward" 简短，从...以后
 
 ---
 *生成日期: 2026-04-08*
