@@ -549,7 +549,7 @@ def main():
     text = MD_FILE.read_text(encoding='utf-8')
     entries = parse_entries(text)
     # 去重（标题相同的只保留最后一条）
-    seen = {{}}
+    seen = {}
     for e in entries:
         seen[e['title']] = e
     entries = list(seen.values())
