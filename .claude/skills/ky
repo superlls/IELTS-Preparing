@@ -1,79 +1,23 @@
 #!/bin/bash
 
 # /ky skill - 口语表达添加工具
-# 用法: /ky 口语表达内容
+# 工作流程：
+# 1. 用户输入: /ky 口语表达
+# 2. Claude 生成详细的英文表达和用法
+# 3. 自动写入到口语表达.md
+# 4. Git 提交并推送
 
-ARGS="$*"
-EXPRESSION="$ARGS"
+# 接收传入的参数（口语表达）
+EXPRESSION="$*"
 
 if [ -z "$EXPRESSION" ]; then
-    echo "请输入口语表达，例如: /ky 经十路是一个双向十车道的马路"
-    exit 1
+    echo "✏️  /ky 口语教练已启动"
+    echo "用法: /ky [中文口语表达]"
+    echo "示例: /ky 经十路是一个双向十车道的马路"
+    exit 0
 fi
 
-# 读取文件末尾
-VOCAB_FILE="/Users/superlls/Desktop/雅思备考/口语表达.md"
-
-# 检查文件是否存在
-if [ ! -f "$VOCAB_FILE" ]; then
-    echo "口语表达文件不存在，正在创建..."
-    mkdir -p "$(dirname "$VOCAB_FILE")"
-    cat > "$VOCAB_FILE" << 'EOF'
-# 雅思口语常见表达
-
-*最后更新：2026-04-09*
-EOF
-fi
-
-# 提示用户
-echo "📝 正在添加口语表达: $EXPRESSION"
+# 显示接收到的内容
+echo "🎤 接收到口语表达: $EXPRESSION"
 echo ""
-echo "请在以下区域输入英文表达和说明："
-echo "---"
-echo "中文: $EXPRESSION"
-echo ""
-echo "英文表达 (可多行, 输入 END 结束):"
-read -r english_input
-EN_TEXT=""
-while [ "$english_input" != "END" ]; do
-    EN_TEXT="$EN_TEXT$english_input"$'\n'
-    read -r english_input
-done
-
-echo ""
-echo "补充说明 (可选, 输入 END 结束):"
-read -r note_input
-NOTE_TEXT=""
-while [ "$note_input" != "END" ]; do
-    NOTE_TEXT="$NOTE_TEXT$note_input"$'\n'
-    read -r note_input
-done
-
-# 组织新条目
-NEW_ENTRY="---
-
-## $EXPRESSION
-
-**中文：** $EXPRESSION
-
-**英文表达：**
-$EN_TEXT
-$NOTE_TEXT
-
-*最后更新：$(date '+%Y-%m-%d')*"
-
-# 将最后更新行替换为新条目 + 新的最后更新行
-LAST_UPDATE_LINE=$(tail -1 "$VOCAB_FILE")
-
-# 插入新内容
-sed -i '' '$ s/^.*$//' "$VOCAB_FILE"  # 删除最后一行
-echo "$NEW_ENTRY" >> "$VOCAB_FILE"
-
-# Git 提交和推送
-cd "$(dirname "$VOCAB_FILE")"
-git add 口语表达.md
-git commit -m "add: 口语表达 $(date '+%Y-%m-%d')"
-git push
-
-echo ""
-echo "✅ 完成！已添加到口语表达.md并推送到远程仓库"
+echo "📋 /ky skill 已启动，现在由 Claude 为你详细讲解..."
