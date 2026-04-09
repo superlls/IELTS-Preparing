@@ -2,13 +2,13 @@
 
 ## 你标注的难词分析
 
-| 词汇 | 含义 | 音标 | 为什么难 | 改进建议 |
-|------|------|------|---------|---------|
-| **straightforward** | 简单的/直接的 | /ˌstreɪtˈfɔːrwərd/ | 长词，多音节，末尾 -ward 容易被吞掉；词汇量不足导致理解困难 | STRAIGHT-FOR-WARD，重音在第一音节；与 forward 区分 |
-| **general** | 宽泛的/一般的 | /ˈdʒenərəl/ | 开头 g 的软音（dʒ），容易与 general 的其他含义混淆 | GEN-er-al，重音在第一音节；常见短语 "more general" 要识别 |
-| **physical** | 自然的/物理的 | /ˈfɪzɪkəl/ | 长词，多音节，中间的 -sic- 音容易模糊 | PHYS-i-cal，重音在第一音节；与"physical environment"搭配理解 |
-| **factors** | 因素 | /ˈfæktərz/ | 复数形式，末尾 -s 容易漏听；"factors linking to"搭配需要反应 | FAC-tors，重音在第一音节；注意复数 -s 音 |
-| **manipulated** | 人为操控的/篡改的 | /ˈmænɪpjuleɪtɪd/ | 长词，6音节，-ed 尾音容易被快速吞掉；是过去分词形式 | MAN-i-pyu-lay-ted，中间 -u- 容易听成 -a-；与 manipulate 动词形式搭配 |
+| 词汇                  | 含义        | 音标                 | 为什么难                                       | 改进建议                                                  |
+| ------------------- | --------- | ------------------ | ------------------------------------------ | ----------------------------------------------------- |
+| **straightforward** | 简单的/直接的   | /ˌstreɪtˈfɔːrwərd/ | 长词，多音节，末尾 -ward 容易被吞掉；词汇量不足导致理解困难          | STRAIGHT-FOR-WARD，重音在第一音节；与 forward 区分                |
+| **general**         | 宽泛的/一般的   | /ˈdʒenərəl/        | 开头 g 的软音（dʒ），容易与 general 的其他含义混淆           | GEN-er-al，重音在第一音节；常见短语 "more general" 要识别             |
+| **physical**        | 自然的/物理的   | /ˈfɪzɪkəl/         | 长词，多音节，中间的 -sic- 音容易模糊                     | PHYS-i-cal，重音在第一音节；与"physical environment"搭配理解        |
+| **factors**         | 因素        | /ˈfæktərz/         | 复数形式，末尾 -s 容易漏听；"factors linking to"搭配需要反应 | FAC-tors，重音在第一音节；注意复数 -s 音                            |
+| **manipulated**     | 人为操控的/篡改的 | /ˈmænɪpjuleɪtɪd/   | 长词，6音节，-ed 尾音容易被快速吞掉；是过去分词形式               | MAN-i-pyu-lay-ted，中间 -u- 容易听成 -a-；与 manipulate 动词形式搭配 |
 
 ## 这些词在原文中的出现位置
 
