@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speaking Journal — 雅思口语笔记</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Noto+Serif+SC:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #0b0f18;
+  --sidebar:  #101520;
+  --card:     #161d2e;
+  --card-bd:  rgba(255,255,255,0.06);
+  --text:     #ddd6c8;
+  --muted:    #7a8499;
+  --gold:     #e8a74c;
+  --gold-dim: rgba(232,167,76,0.12);
+  --blue:     #7dd3fc;
+  --green:    #86efac;
+  --sidebar-w: 270px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', 'Noto Serif SC', serif;
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--sidebar);
+  border-right: 1px solid var(--card-bd);
+  position: fixed;
+  top: 0; left: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--card-bd);
+}
+
+.brand-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0ece3;
+  line-height: 1.2;
+}
+
+.brand-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-family: 'Noto Serif SC', serif;
+}
+
+.search-wrap {
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--card-bd);
+}
+
+.search-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--card-bd);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  padding: 9px 12px;
+  font-family: 'Noto Serif SC', serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-input::placeholder { color: var(--muted); }
+.search-input:focus { border-color: var(--gold); }
+
+.nav-count {
+  padding: 10px 18px 6px;
+  font-size: 11px;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.nav-list {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0 20px;
+}
+
+.nav-list::-webkit-scrollbar { width: 4px; }
+.nav-list::-webkit-scrollbar-track { background: transparent; }
+.nav-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.nav-link {
+  display: block;
+  padding: 9px 20px;
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'Noto Serif SC', serif;
+  border-left: 2px solid transparent;
+  transition: all 0.18s;
+  line-height: 1.4;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--gold);
+  border-left-color: var(--gold);
+  background: var(--gold-dim);
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 48px 48px 80px;
+  max-width: 860px;
+}
+
+.main-header {
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--card-bd);
+}
+
+.main-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  color: #f0ece3;
+  letter-spacing: -0.02em;
+}
+
+.main-header p {
+  color: var(--muted);
+  font-size: 14px;
+  margin-top: 8px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--card-bd);
+  border-radius: 16px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  transition: border-color 0.25s, transform 0.2s;
+  animation: fadeUp 0.4s ease both;
+}
+
+.card:hover {
+  border-color: rgba(232,167,76,0.25);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.card-header {
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--card-bd);
+  background: rgba(255,255,255,0.015);
+}
+
+.card-meta {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 11px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border: 1px solid rgba(232,167,76,0.25);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
+
+.card-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #f0ece3;
+  line-height: 1.4;
+}
+
+.meaning {
+  margin-top: 8px;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.7;
+  font-family: 'Noto Serif SC', serif;
+}
+
+.card-body {
+  padding: 20px 28px 24px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.section h3 {
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+/* 英文表达 */
+.en-list { list-style: none; }
+.en-primary {
+  font-size: 17px;
+  color: var(--blue);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  padding: 6px 0 6px 14px;
+  border-left: 2px solid var(--blue);
+  margin-bottom: 8px;
+}
+.en-alt {
+  font-size: 13.5px;
+  color: rgba(125, 211, 252, 0.65);
+  padding: 3px 0 3px 14px;
+  border-left: 1px solid rgba(125,211,252,0.2);
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* 关键词汇 */
+.vocab-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 8px;
+}
+.vocab-list li {
+  font-size: 12.5px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--card-bd);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-family: 'Noto Serif SC', serif;
+  color: var(--text);
+}
+.vocab-list li strong {
+  color: var(--gold);
+}
+
+/* 例句 */
+.ex-list { list-style: none; }
+.ex-list li {
+  font-size: 13px;
+  color: var(--green);
+  padding: 5px 0 5px 14px;
+  border-left: 1px solid rgba(134,239,172,0.25);
+  margin-bottom: 6px;
+  font-family: 'Noto Serif SC', serif;
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+/* 雅思提示 */
+.tip {
+  background: rgba(232,167,76,0.07);
+  border: 1px solid rgba(232,167,76,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+  color: rgba(232,167,76,0.85);
+  line-height: 1.7;
+  font-family: 'Noto Serif SC', serif;
+}
+.tip-label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* 搜索无结果 */
+.no-result {
+  text-align: center;
+  color: var(--muted);
+  padding: 60px 0;
+  font-family: 'Noto Serif SC', serif;
+  display: none;
+}
+
+/* 动画延迟 */
+.card:nth-child(1)  { animation-delay: 0.04s; }
+.card:nth-child(2)  { animation-delay: 0.08s; }
+.card:nth-child(3)  { animation-delay: 0.12s; }
+.card:nth-child(4)  { animation-delay: 0.16s; }
+.card:nth-child(5)  { animation-delay: 0.20s; }
+.card:nth-child(6)  { animation-delay: 0.24s; }
+.card:nth-child(7)  { animation-delay: 0.28s; }
+.card:nth-child(8)  { animation-delay: 0.32s; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { margin-left: 0; padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-label">IELTS Speaking</div>
+    <div class="brand-title">Speaking<br>Journal</div>
+    <div class="brand-sub">口语表达笔记 · 8 条</div>
+  </div>
+  <div class="search-wrap">
+    <input class="search-input" type="text" placeholder="搜索表达..." id="searchInput">
+  </div>
+  <div class="nav-count" id="navCount">共 8 条表达</div>
+  <ul class="nav-list" id="navList">
+    <li><a href="#entry-0" class="nav-link" data-idx="0">道路描述</a></li>
+<li><a href="#entry-1" class="nav-link" data-idx="1">经十路是一个双向十车道的马路</a></li>
+<li><a href="#entry-2" class="nav-link" data-idx="2">我蹲下才能看到他</a></li>
+<li><a href="#entry-3" class="nav-link" data-idx="3">别模仿我说话！我们选个什么姿势好呢</a></li>
+<li><a href="#entry-4" class="nav-link" data-idx="4">卸妆</a></li>
+<li><a href="#entry-5" class="nav-link" data-idx="5">Skirt 和 Dress 的区别</a></li>
+<li><a href="#entry-6" class="nav-link" data-idx="6">快戴上你的隐形眼镜吧</a></li>
+<li><a href="#entry-7" class="nav-link" data-idx="7">这是一个无人售货商店</a></li>
+
+  </ul>
+</aside>
+
+<main class="main">
+  <div class="main-header">
+    <h1>Speaking Journal</h1>
+    <p>雅思口语表达手账 · 共 8 条 · 持续更新中</p>
+  </div>
+  <div id="cardContainer">
+    
+<article class="card" id="entry-0">
+  <header class="card-header">
+    <div class="card-meta"></div>
+    <h2 class="card-title">道路描述</h2>
+    
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">Jingshi Road is a two-way, ten-lane road. (最简洁)</li><li class="en-alt">Jingshi Road is a ten-lane bidirectional road.</li><li class="en-alt">Jingshi Road features ten lanes in both directions.</li><li class="en-alt">Jingshi Road has ten lanes going both directions.</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>two-way = 双向的</li><li>bidirectional = 双向的</li><li>lane = 车道</li><li>road/avenue = 马路</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;The road is quite wide with ten lanes.&quot;</li><li>&quot;It's a major road with lanes in both directions.&quot;</li></ul></section>
+    
+  </div>
+</article>
+<article class="card" id="entry-1">
+  <header class="card-header">
+    <div class="card-meta"></div>
+    <h2 class="card-title">经十路是一个双向十车道的马路</h2>
+    
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">Jingshi Road is a two-way, ten-lane road. (最简洁)</li><li class="en-alt">Jingshi Road is a ten-lane bidirectional road.</li><li class="en-alt">Jingshi Road has ten lanes in both directions.</li><li class="en-alt">It's a major road with ten lanes, running in both directions.</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>two-way = 双向的 | lane = 车道 | bidirectional = 双向的</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;The road is quite wide with ten lanes.&quot;</li><li>&quot;It's a two-way road with lots of lanes.&quot;</li><li>&quot;Traffic flows in both directions across ten lanes.&quot;</li></ul></section>
+    
+  </div>
+</article>
+<article class="card" id="entry-2">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">日常对话 / 描述场景</span></div>
+    <h2 class="card-title">我蹲下才能看到他</h2>
+    <p class="meaning">描述对方身材矮小，说话者需要蹲下来才能与其目光平视。常用于描述小孩、身高差异悬殊等场景，语气可以幽默或温馨。</p>
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">I had to squat down just to see his face.</li><li class="en-alt">I had to crouch down to look at him.</li><li class="en-alt">He was so short that I had to get down to his level to see him.</li><li class="en-alt">I had to bend down just to make eye contact with him.</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>squat down = 蹲下（比较随意的动作）</li><li>crouch = 蹲伏、弯腰</li><li>get down to someone's level = 降低到某人的高度</li><li>make eye contact = 目光接触、对视</li><li>bend down = 弯腰</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;He's so tiny — I actually had to squat down just to see his face!&quot; (他太小了，我真的要蹲下来才能看到他的脸！)</li><li>&quot;When I talk to little kids, I always crouch down to their level so they feel comfortable.&quot; (我和小孩说话时，总是蹲下到他们的高度，让他们感到自在。)</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>这类描述身高或身体动作的表达，在雅思口语 Part 2（描述一个人）或 Part 1（描述家人、朋友）中很实用。用 &quot;squat down&quot; 和 &quot;get down to someone's level&quot; 这样的短语，比单纯说 &quot;small&quot; 更生动形象，能展示词汇多样性。</div>
+  </div>
+</article>
+<article class="card" id="entry-3">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">日常对话 / 幽默表达 / 命令语气</span></div>
+    <h2 class="card-title">别模仿我说话！我们选个什么姿势好呢</h2>
+    <p class="meaning">第一句是命令或抱怨别人模仿自己的说话风格；第二句是询问大家选择什么样的位置或方式（通常用在拍照、合作、运动等场景）。这两句可以分开理解或作为连贯对话。</p>
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">*&quot;别模仿我说话！&quot;**</li><li class="en-alt">Stop copying the way I talk!</li><li class="en-alt">Don't imitate my way of speaking.</li><li class="en-alt">Stop mimicking my accent/speech!</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>copy / imitate / mimic = 模仿、学（别人的说话方式）</li><li>accent = 口音、腔调</li><li>pose = 姿势、摆姿态（常用于拍照）</li><li>position / stance = 位置、姿态</li><li>完整搭配：stop + -ing = 停止做某事</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;Stop copying how I talk! It's annoying.&quot; (别模仿我怎么说话！很烦人。)</li><li>&quot;Okay everyone, what pose should we try for the photo?&quot; (好吧各位，我们拍照应该摆什么姿势？)</li><li>&quot;Come on, don't imitate my way of speaking like that!&quot; (拜托，别这样学我说话的方式！)</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>&quot;Stop copying/mimicking&quot; 这类表达在描述人物性格或人际互动时很有用，适合 Part 2（描述你不喜欢的人）或 Part 3（讨论人际关系）。&quot;What pose/position&quot; 则适用于描述拍照、运动、日常活动等话题。用 &quot;mimic&quot; 或 &quot;imitate&quot; 比简单的 &quot;copy&quot; 更学术，能提升答题质量。</div>
+  </div>
+</article>
+<article class="card" id="entry-4">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">日常对话 / 日常活动</span></div>
+    <h2 class="card-title">卸妆</h2>
+    <p class="meaning">清洁脸部，将化妆品擦掉。通常是女性在睡前或卸下妆容时使用的日常活动和护肤步骤。</p>
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">remove my makeup</li><li class="en-alt">take off your makeup</li><li class="en-alt">take your makeup off</li><li class="en-alt">cleanse your face</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>remove = 去除、卸掉</li><li>makeup = 化妆品、妆容</li><li>makeup remover = 卸妆液、卸妆产品</li><li>cleanse / cleansing = 清洁</li><li>skincare routine = 护肤程序</li><li>before bed = 睡前</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;I need to remove my makeup before bed.&quot; (我睡前需要卸妆。)</li><li>&quot;Do you have a makeup remover I can use?&quot; (你有卸妆液我可以用吗？)</li><li>&quot;I always use a cleansing lotion to remove my makeup.&quot; (我总是用卸妆乳来卸妆。)</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>这类日常护理活动在雅思口语 Part 1（你的日常习惯、护肤步骤）或 Part 2（描述你的日常程序）中会出现。用 &quot;makeup remover&quot; 和 &quot;cleanse your face&quot; 这样的自然搭配比简单的词汇更丰富，能展示更多词汇范围。Part 3 可能会讨论&quot;女性为什么化妆&quot;或&quot;美容习惯&quot;相关话题。</div>
+  </div>
+</article>
+<article class="card" id="entry-5">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">词汇对比 / 日常服装表达</span></div>
+    <h2 class="card-title">Skirt 和 Dress 的区别</h2>
+    <p class="meaning">这两个词都与女性服装相关，但含义和使用场景不同。理解它们的区别能帮助你在描述服装时更准确地表达。</p>
+  </header>
+  <div class="card-body">
+    
+    
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;I prefer wearing skirts in summer because they're more comfortable.&quot; (我夏天更喜欢穿裙子，因为更舒服。)</li><li>&quot;That dress looks amazing on you!&quot; (那件连衣裙在你身上看起来太好看了！)</li><li>&quot;Do you usually wear skirts or dresses?&quot; (你通常穿独立裙子还是连衣裙？)</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>在描述衣服、购物、日常穿着的话题中，正确区分 skirt 和 dress 是基础。Part 1 可能问你&quot;你通常穿什么类型的衣服&quot;，Part 2 可能要求&quot;描述一件你喜欢的衣服&quot;。用 &quot;midi skirt&quot;、&quot;maxi dress&quot;、&quot;casual dress&quot; 这样的准确搭配能提升答题质量。</div>
+  </div>
+</article>
+<article class="card" id="entry-6">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">日常对话 / 命令/建议</span></div>
+    <h2 class="card-title">快戴上你的隐形眼镜吧</h2>
+    <p class="meaning">催促或建议某人穿戴隐形眼镜。通常用在朋友、家人之间的日常对话中，语气友好但略带催促。</p>
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">Put your contact lenses in!</li><li class="en-alt">Put on your contact lenses.</li><li class="en-alt">Go put in your contacts.</li><li class="en-alt">You should put on your contact lenses.</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>put in = 戴上、放入（隐形眼镜）</li><li>contact lenses = 隐形眼镜</li><li>contacts = 隐形眼镜（口语缩写）</li><li>hurry up = 快点</li><li>get ready = 准备好</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>&quot;Put in your contact lenses, we're running late!&quot; (快戴上你的隐形眼镜，我们要迟到了！)</li><li>&quot;Don't forget to put on your contacts before you go out.&quot; (别忘了出门前戴隐形眼镜。)</li><li>&quot;Go put in your contacts, it'll make you look better.&quot; (去戴上你的隐形眼镜，会让你看起来更好。)</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>这类日常命令和建议在 Part 1（日常习惯）或 Part 2（描述一个人或日常准备）中很实用。&quot;Put in/on&quot; 这样的短语搭配比简单的 &quot;wear&quot; 更自然口语化。Part 3 可能涉及&quot;眼镜 vs 隐形眼镜&quot;的讨论话题，这时可以用 &quot;I prefer contacts because...&quot; 来表达个人偏好。</div>
+  </div>
+</article>
+<article class="card" id="entry-7">
+  <header class="card-header">
+    <div class="card-meta"><span class="tag">描述场景 / 地点描述</span></div>
+    <h2 class="card-title">这是一个无人售货商店</h2>
+    <p class="meaning">用来介绍或描述一种零售业态，即没有店员的商店，通过自动售卖机或自助结账系统进行购物。</p>
+  </header>
+  <div class="card-body">
+    <section class="section"><h3>英文表达</h3><ul class="en-list"><li class="en-primary">This is an unmanned convenience store.</li><li class="en-alt">This is a self-service convenience store.</li><li class="en-alt">This is a cashier-less store.</li><li class="en-alt">This is an automated retail shop.</li></ul></section>
+    <section class="section"><h3>关键词汇</h3><ul class="vocab-list"><li>unmanned = 无人的、不需要员工的</li><li>convenience store = 便利店、小超市</li><li>self-service = 自助的、自我服务的</li><li>cashier-less = 无收银员的</li><li>automated = 自动化的</li><li>checkout system = 结账系统</li></ul></section>
+    <section class="section"><h3>口语例句</h3><ul class="ex-list"><li>This is an unmanned convenience store where you can pick up whatever you need and pay automatically. 这是一个无人便利店，你可以拿任何你需要的东西，然后自动结账。</li><li>It's a self-service store with no staff, so customers just scan and go. 这是一个没有员工的自助店，顾客只需扫一扫就可以离开。</li><li>What's interesting about this unmanned shop is that you don't need to queue at the checkout counter. 这个无人商店有趣的地方是你不需要在收银台排队。</li></ul></section>
+    <div class="tip"><span class="tip-label">雅思提示</span>这类表达很适合在 Part 2（描述一个场所）或 Part 3（讨论零售业、科技发展）中使用。如果 Part 2 题目要求&quot;描述一个你去过的有趣的地方&quot;，你可以描述无人售货商店，并用 unmanned/self-service 等词汇展开。在 Part 3 中，可以讨论&quot;自动化对零售业的影响&quot;，表达可以进一步延伸为：*&quot;The rise of unmanned stores reflects how technology is changing the retail industry&quot;*。这样既能展示词汇广度，又能自然流畅地表达观点。
+
+*最后更新：2026-04-09*</div>
+  </div>
+</article>
+  </div>
+  <div class="no-result" id="noResult">没有找到相关表达</div>
+</main>
+
+<script>
+const searchInput = document.getElementById('searchInput');
+const cards = document.querySelectorAll('.card');
+const navLinks = document.querySelectorAll('.nav-link');
+const navCount = document.getElementById('navCount');
+const noResult = document.getElementById('noResult');
+
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.trim().toLowerCase();
+  let visible = 0;
+  cards.forEach((card, i) => {
+    const text = card.textContent.toLowerCase();
+    const show = !q || text.includes(q);
+    card.style.display = show ? '' : 'none';
+    navLinks[i].style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  navCount.textContent = `共 ${visible} 条表达`;
+  noResult.style.display = visible === 0 ? 'block' : 'none';
+});
+
+// 高亮当前导航项
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-30% 0px -60% 0px' });
+
+cards.forEach(card => observer.observe(card));
+</script>
+</body>
+</html>
