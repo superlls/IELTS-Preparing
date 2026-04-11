@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-"""听力辨词卡：听音 → 看词 → 按需查释义"""
-import json
+"""听力辨词卡：听音 → 看词 → 按需查释义（HTTP 服务器模式）"""
+import json, http.server, socketserver, webbrowser, threading, sys
 from pathlib import Path
 
 DIR = Path(__file__).parent
 MD = DIR / "听不出的词.md"
 OUT = DIR / "index.html"
+PORT = 8765
 
 
 def parse(text: str) -> list[str]:

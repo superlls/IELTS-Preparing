@@ -476,6 +476,217 @@ body {
   letter-spacing: 0;
 }
 
+/* Floating add button */
+.fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #1d1d1f 0%, #000 100%);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow:
+    0 16px 32px -8px rgba(0,0,0,0.3),
+    0 4px 12px -4px rgba(0,0,0,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  z-index: 200;
+}
+.fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow:
+    0 20px 40px -8px rgba(0,0,0,0.35),
+    0 6px 16px -4px rgba(0,0,0,0.22),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+}
+.fab:active { transform: translateY(0) scale(0.98); }
+.fab svg { width: 20px; height: 20px; fill: white; }
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.32);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.modal-backdrop.show { display: flex; opacity: 1; }
+
+.modal {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(30px);
+  -webkit-backdrop-filter: saturate(180%) blur(30px);
+  border-radius: 22px;
+  padding: 28px 28px 24px;
+  box-shadow:
+    0 40px 100px -20px rgba(0,0,0,0.35),
+    0 16px 40px -12px rgba(0,0,0,0.2),
+    inset 0 0 0 0.5px rgba(255,255,255,0.8);
+  transform: scale(0.94) translateY(8px);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.modal-backdrop.show .modal { transform: scale(1) translateY(0); }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.modal-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.06);
+  color: var(--text-2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+.modal-close:hover { background: rgba(0,0,0,0.1); color: var(--text); }
+
+.modal-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.modal-input {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  color: var(--text);
+  background: white;
+  border: 0.5px solid var(--hairline-strong);
+  border-radius: 12px;
+  outline: none;
+  transition: all 0.2s;
+  letter-spacing: -0.005em;
+}
+.modal-input::placeholder { color: var(--text-3); }
+.modal-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+}
+.modal-add {
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  color: white;
+  background: var(--accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: -0.005em;
+}
+.modal-add:hover { background: #0077ed; }
+.modal-add:active { transform: scale(0.97); }
+.modal-add:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.modal-section {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  font-weight: 600;
+  margin: 18px 0 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-section .count {
+  background: rgba(0,0,0,0.06);
+  padding: 2px 8px;
+  border-radius: 980px;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.user-list {
+  max-height: 220px;
+  overflow-y: auto;
+  margin: 0 -6px;
+  padding: 0 6px;
+}
+.user-list:empty::before {
+  content: '尚未添加 · 输入单词后按 Enter';
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 24px 0;
+  letter-spacing: -0.005em;
+  text-transform: none;
+}
+.user-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+  background: white;
+  border: 0.5px solid var(--hairline);
+  border-radius: 10px;
+  margin-bottom: 6px;
+  transition: all 0.2s;
+}
+.user-item:hover { border-color: var(--hairline-strong); }
+.user-item .w {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.user-item .del {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--text-3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+.user-item .del:hover { background: rgba(255, 59, 48, 0.1); color: #ff3b30; }
+
+.modal-hint {
+  font-size: 11px;
+  color: var(--text-3);
+  text-align: center;
+  margin-top: 14px;
+  letter-spacing: -0.005em;
+}
+
 @media (max-width: 600px) {
   .card { padding: 48px 24px; min-height: 420px; border-radius: 22px; }
   .play-btn { width: 124px; height: 124px; }
@@ -548,12 +759,35 @@ body {
   </button>
 </div>
 
-<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 添加单词 · 数据来源：有道发音 + MyMemory 翻译</div>
+<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 或点右下 + 添加 · 有道发音 + MyMemory 翻译</div>
+
+<button class="fab" id="fab" title="添加单词">
+  <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+</button>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title">添加听不出的词</div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-input-row">
+      <input type="text" class="modal-input" id="wordInput" placeholder="输入英文单词，如 itinerary" autocomplete="off" spellcheck="false">
+      <button class="modal-add" id="modalAdd">添加</button>
+    </div>
+    <div class="modal-section">我添加的词 <span class="count" id="userCount">0</span></div>
+    <div class="user-list" id="userList"></div>
+    <div class="modal-hint">保存在浏览器本地 · 永久保存请写进 听不出的词.md</div>
+  </div>
+</div>
 
 <script>
-const WORDS = ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable"];
+const BASE_WORDS = ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable"];
 const CACHE_KEY = 'listening-vocab-cache-v1';
+const USER_KEY = 'listening-vocab-user-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+let userWords = JSON.parse(localStorage.getItem(USER_KEY) || '[]');
+let WORDS = [...BASE_WORDS, ...userWords];
 
 let order = WORDS.map((_, i) => i);
 let pos = 0;
@@ -671,8 +905,73 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
+// Modal: add word
+function rebuildWords() {
+  WORDS = [...BASE_WORDS, ...userWords];
+  order = WORDS.map((_, i) => i);
+  if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
+  localStorage.setItem(USER_KEY, JSON.stringify(userWords));
+  renderUserList();
+  update();
+}
+
+function renderUserList() {
+  const list = $('#userList');
+  $('#userCount').textContent = userWords.length;
+  list.innerHTML = userWords.map((w, i) => `
+    <div class="user-item">
+      <span class="w">${w.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}</span>
+      <button class="del" data-i="${i}" title="删除">×</button>
+    </div>
+  `).join('');
+  list.querySelectorAll('.del').forEach(b => {
+    b.addEventListener('click', () => {
+      userWords.splice(parseInt(b.dataset.i), 1);
+      rebuildWords();
+    });
+  });
+}
+
+function addWord() {
+  const input = $('#wordInput');
+  const val = input.value.trim();
+  if (!val) return;
+  if (WORDS.includes(val)) {
+    input.value = '';
+    input.placeholder = '已存在：' + val;
+    setTimeout(() => { input.placeholder = '输入英文单词，如 itinerary'; }, 1600);
+    return;
+  }
+  userWords.push(val);
+  input.value = '';
+  rebuildWords();
+}
+
+function openModal() {
+  $('#modalBackdrop').classList.add('show');
+  renderUserList();
+  setTimeout(() => $('#wordInput').focus(), 100);
+}
+function closeModal() { $('#modalBackdrop').classList.remove('show'); }
+
+$('#fab').addEventListener('click', openModal);
+$('#modalClose').addEventListener('click', closeModal);
+$('#modalAdd').addEventListener('click', addWord);
+$('#wordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); addWord(); }
+  else if (e.key === 'Escape') closeModal();
+  e.stopPropagation();
+});
+$('#modalBackdrop').addEventListener('click', e => {
+  if (e.target === $('#modalBackdrop')) closeModal();
+});
+
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if ($('#modalBackdrop').classList.contains('show')) {
+    if (e.key === 'Escape') closeModal();
+    return;
+  }
   if (e.key === ' ') { e.preventDefault(); play(); }
   else if (e.key === 'Enter') {
     e.preventDefault();
