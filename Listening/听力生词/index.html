@@ -734,6 +734,9 @@ body {
         <button class="icon-btn" id="replaySlow" title="慢速重播">
           <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
         </button>
+        <button class="icon-btn" id="hideWord" title="返回听音模式">
+          <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/></svg>
+        </button>
       </div>
       <button class="detail-btn" id="detailBtn">查看释义</button>
 
@@ -775,24 +778,23 @@ body {
       <input type="text" class="modal-input" id="wordInput" placeholder="输入英文单词，如 itinerary" autocomplete="off" spellcheck="false">
       <button class="modal-add" id="modalAdd">添加</button>
     </div>
-    <div class="modal-section">我添加的词 <span class="count" id="userCount">0</span></div>
+    <div class="modal-section">当前词库 <span class="count" id="userCount">0</span></div>
     <div class="user-list" id="userList"></div>
-    <div class="modal-hint">保存在浏览器本地 · 永久保存请写进 听不出的词.md</div>
+    <div class="modal-hint">自动写入 听不出的词.md · 刷新即重新构建</div>
   </div>
 </div>
 
 <script>
-const BASE_WORDS = ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable"];
+let WORDS = ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable", "cat", "list"];
 const CACHE_KEY = 'listening-vocab-cache-v1';
-const USER_KEY = 'listening-vocab-user-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-let userWords = JSON.parse(localStorage.getItem(USER_KEY) || '[]');
-let WORDS = [...BASE_WORDS, ...userWords];
+const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
 let audio = null;
+let revealMode = false;
 
 const $ = s => document.querySelector(s);
 
@@ -816,19 +818,33 @@ function showPlayStage() {
   $('#stagePlay').classList.remove('hidden');
   $('#stageWord').classList.add('hidden');
   $('#meaning').classList.remove('show');
-  $('#detailBtn').classList.remove('loaded');
   $('#detailBtn').style.display = '';
 }
 
-function reveal() {
+function showWordStage() {
   const w = currentWord();
+  if (!w) return;
   $('#wordDisplay').textContent = w;
   $('#youdaoLink').href = `https://www.youdao.com/result?word=${encodeURIComponent(w)}&lang=en`;
   $('#stagePlay').classList.add('hidden');
   $('#stageWord').classList.remove('hidden');
+  // reset meaning panel each time we land on a new word
+  $('#meaning').classList.remove('show');
+  $('#detailBtn').style.display = '';
+  // re-trigger entrance animation
   $('#stageWord').classList.remove('word-stage');
   void $('#stageWord').offsetWidth;
   $('#stageWord').classList.add('word-stage');
+}
+
+function reveal() {
+  revealMode = true;
+  showWordStage();
+}
+
+function hideWord() {
+  revealMode = false;
+  showPlayStage();
 }
 
 async function loadMeaning() {
@@ -867,7 +883,7 @@ function update() {
     $('#progress').textContent = '0 / 0';
     return;
   }
-  showPlayStage();
+  if (revealMode) showWordStage(); else showPlayStage();
   $('#counter').textContent = `${pos + 1} / ${WORDS.length}`;
   $('#progress').textContent = `${pos + 1} / ${WORDS.length}`;
   setTimeout(() => play(), 320);
@@ -884,6 +900,7 @@ $('#playBtn').addEventListener('click', () => play());
 $('#revealBtn').addEventListener('click', reveal);
 $('#replayNormal').addEventListener('click', () => play(1));
 $('#replaySlow').addEventListener('click', () => play(0.7));
+$('#hideWord').addEventListener('click', hideWord);
 $('#detailBtn').addEventListener('click', loadMeaning);
 $('#prevBtn').addEventListener('click', () => go(-1));
 $('#nextBtn').addEventListener('click', () => go(1));
@@ -905,51 +922,75 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
-// Modal: add word
-function rebuildWords() {
-  WORDS = [...BASE_WORDS, ...userWords];
-  order = WORDS.map((_, i) => i);
-  if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
-  localStorage.setItem(USER_KEY, JSON.stringify(userWords));
-  renderUserList();
-  update();
+// Modal: server-backed word management
+const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function refreshWordsFromServer() {
+  try {
+    const res = await fetch('/api/words', { cache: 'no-store' });
+    WORDS = await res.json();
+    order = WORDS.map((_, i) => i);
+    if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
+    renderUserList();
+    update();
+  } catch (e) { console.error(e); }
 }
 
 function renderUserList() {
   const list = $('#userList');
-  $('#userCount').textContent = userWords.length;
-  list.innerHTML = userWords.map((w, i) => `
+  $('#userCount').textContent = WORDS.length;
+  list.innerHTML = WORDS.map(w => `
     <div class="user-item">
-      <span class="w">${w.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}</span>
-      <button class="del" data-i="${i}" title="删除">×</button>
+      <span class="w">${escapeHtml(w)}</span>
+      <button class="del" data-w="${escapeHtml(w)}" title="删除">×</button>
     </div>
   `).join('');
   list.querySelectorAll('.del').forEach(b => {
-    b.addEventListener('click', () => {
-      userWords.splice(parseInt(b.dataset.i), 1);
-      rebuildWords();
+    b.addEventListener('click', async () => {
+      if (!hasServer) { alert('请通过 python3 build.py 启动服务器再操作'); return; }
+      await fetch('/api/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word: b.dataset.w })
+      });
+      await refreshWordsFromServer();
     });
   });
 }
 
-function addWord() {
+async function addWord() {
   const input = $('#wordInput');
   const val = input.value.trim();
   if (!val) return;
+  if (!hasServer) {
+    input.value = '';
+    input.placeholder = '请通过 python3 build.py 启动服务器';
+    return;
+  }
   if (WORDS.includes(val)) {
     input.value = '';
     input.placeholder = '已存在：' + val;
     setTimeout(() => { input.placeholder = '输入英文单词，如 itinerary'; }, 1600);
     return;
   }
-  userWords.push(val);
+  const res = await fetch('/api/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ word: val })
+  });
+  const data = await res.json();
   input.value = '';
-  rebuildWords();
+  if (data.ok) {
+    WORDS = data.words;
+    order = WORDS.map((_, i) => i);
+    renderUserList();
+    update();
+  }
 }
 
 function openModal() {
   $('#modalBackdrop').classList.add('show');
-  renderUserList();
+  if (hasServer) refreshWordsFromServer(); else renderUserList();
   setTimeout(() => $('#wordInput').focus(), 100);
 }
 function closeModal() { $('#modalBackdrop').classList.remove('show'); }
