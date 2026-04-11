@@ -784,7 +784,27 @@ body {
   </button>
 </div>
 
-<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 添加单词 · 数据来源：有道发音 + MyMemory 翻译</div>
+<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 或点右下 + 添加 · 有道发音 + MyMemory 翻译</div>
+
+<button class="fab" id="fab" title="添加单词">
+  <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+</button>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title">添加听不出的词</div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-input-row">
+      <input type="text" class="modal-input" id="wordInput" placeholder="输入英文单词，如 itinerary" autocomplete="off" spellcheck="false">
+      <button class="modal-add" id="modalAdd">添加</button>
+    </div>
+    <div class="modal-section">我添加的词 <span class="count" id="userCount">0</span></div>
+    <div class="user-list" id="userList"></div>
+    <div class="modal-hint">保存在浏览器本地 · 永久保存请写进 听不出的词.md</div>
+  </div>
+</div>
 
 <script>
 const WORDS = __WORDS__;
