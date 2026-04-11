@@ -801,9 +801,9 @@ body {
       <input type="text" class="modal-input" id="wordInput" placeholder="输入英文单词，如 itinerary" autocomplete="off" spellcheck="false">
       <button class="modal-add" id="modalAdd">添加</button>
     </div>
-    <div class="modal-section">我添加的词 <span class="count" id="userCount">0</span></div>
+    <div class="modal-section">当前词库 <span class="count" id="userCount">0</span></div>
     <div class="user-list" id="userList"></div>
-    <div class="modal-hint">保存在浏览器本地 · 永久保存请写进 听不出的词.md</div>
+    <div class="modal-hint">自动写入 听不出的词.md · 刷新即重新构建</div>
   </div>
 </div>
 
