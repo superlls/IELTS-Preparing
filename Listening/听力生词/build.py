@@ -930,51 +930,75 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
-// Modal: add word
-function rebuildWords() {
-  WORDS = [...BASE_WORDS, ...userWords];
-  order = WORDS.map((_, i) => i);
-  if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
-  localStorage.setItem(USER_KEY, JSON.stringify(userWords));
-  renderUserList();
-  update();
+// Modal: server-backed word management
+const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
+
+async function refreshWordsFromServer() {
+  try {
+    const res = await fetch('/api/words', { cache: 'no-store' });
+    WORDS = await res.json();
+    order = WORDS.map((_, i) => i);
+    if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
+    renderUserList();
+    update();
+  } catch (e) { console.error(e); }
 }
 
 function renderUserList() {
   const list = $('#userList');
-  $('#userCount').textContent = userWords.length;
-  list.innerHTML = userWords.map((w, i) => `
+  $('#userCount').textContent = WORDS.length;
+  list.innerHTML = WORDS.map(w => `
     <div class="user-item">
-      <span class="w">${w.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}</span>
-      <button class="del" data-i="${i}" title="删除">×</button>
+      <span class="w">${escapeHtml(w)}</span>
+      <button class="del" data-w="${escapeHtml(w)}" title="删除">×</button>
     </div>
   `).join('');
   list.querySelectorAll('.del').forEach(b => {
-    b.addEventListener('click', () => {
-      userWords.splice(parseInt(b.dataset.i), 1);
-      rebuildWords();
+    b.addEventListener('click', async () => {
+      if (!hasServer) { alert('请通过 python3 build.py 启动服务器再操作'); return; }
+      await fetch('/api/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ word: b.dataset.w })
+      });
+      await refreshWordsFromServer();
     });
   });
 }
 
-function addWord() {
+async function addWord() {
   const input = $('#wordInput');
   const val = input.value.trim();
   if (!val) return;
+  if (!hasServer) {
+    input.value = '';
+    input.placeholder = '请通过 python3 build.py 启动服务器';
+    return;
+  }
   if (WORDS.includes(val)) {
     input.value = '';
     input.placeholder = '已存在：' + val;
     setTimeout(() => { input.placeholder = '输入英文单词，如 itinerary'; }, 1600);
     return;
   }
-  userWords.push(val);
+  const res = await fetch('/api/add', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ word: val })
+  });
+  const data = await res.json();
   input.value = '';
-  rebuildWords();
+  if (data.ok) {
+    WORDS = data.words;
+    order = WORDS.map((_, i) => i);
+    renderUserList();
+    update();
+  }
 }
 
 function openModal() {
   $('#modalBackdrop').classList.add('show');
-  renderUserList();
+  if (hasServer) refreshWordsFromServer(); else renderUserList();
   setTimeout(() => $('#wordInput').focus(), 100);
 }
 function closeModal() { $('#modalBackdrop').classList.remove('show'); }
