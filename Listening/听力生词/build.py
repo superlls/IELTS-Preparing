@@ -909,7 +909,7 @@ function update() {
     $('#progress').textContent = '0 / 0';
     return;
   }
-  showPlayStage();
+  if (revealMode) showWordStage(); else showPlayStage();
   $('#counter').textContent = `${pos + 1} / ${WORDS.length}`;
   $('#progress').textContent = `${pos + 1} / ${WORDS.length}`;
   setTimeout(() => play(), 320);
