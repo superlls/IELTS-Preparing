@@ -1,0 +1,726 @@
+#!/usr/bin/env python3
+"""听力辨词卡：听音 → 看词 → 按需查释义"""
+import json
+from pathlib import Path
+
+DIR = Path(__file__).parent
+MD = DIR / "听不出的词.md"
+OUT = DIR / "index.html"
+
+
+def parse(text: str) -> list[str]:
+    words = []
+    seen = set()
+    for line in text.splitlines():
+        w = line.strip()
+        if not w or w.startswith('#'):
+            continue
+        if w not in seen:
+            seen.add(w)
+            words.append(w)
+    return words
+
+
+def build(words: list[str]) -> str:
+    words_json = json.dumps(words, ensure_ascii=False)
+    return r'''<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>听力辨词 · Ear Training</title>
+<style>
+:root {
+  --bg: #fbfbfd;
+  --text: #1d1d1f;
+  --text-2: #6e6e73;
+  --text-3: #86868b;
+  --hairline: rgba(0,0,0,0.08);
+  --hairline-strong: rgba(0,0,0,0.14);
+  --accent: #0071e3;
+  --card: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% -8%, #eef2f7 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, #f3eef7 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 0% 80%, #eef5f3 0%, transparent 55%);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  letter-spacing: -0.01em;
+}
+
+/* Frosted nav */
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  background: rgba(251, 251, 253, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 0.5px solid var(--hairline);
+}
+.nav-inner {
+  width: 100%;
+  max-width: 980px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nav-title {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.nav-title .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin: 0 10px 2px; vertical-align: middle; }
+.nav-title em { font-style: normal; color: var(--text-3); font-weight: 400; }
+.nav-counter {
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* Hero */
+.hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 24px 24px;
+  position: relative;
+}
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.05s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.headline {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 600;
+  letter-spacing: -0.028em;
+  line-height: 1.08;
+  text-align: center;
+  margin-bottom: 40px;
+  opacity: 0;
+  animation: fadeUp 0.9s 0.15s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+.headline .gradient {
+  background: linear-gradient(135deg, #0071e3 0%, #6e5bff 50%, #a15bff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card */
+.card {
+  width: 100%;
+  max-width: 680px;
+  min-height: 460px;
+  background: var(--card);
+  border-radius: 28px;
+  box-shadow:
+    0 30px 80px -20px rgba(0,0,0,0.15),
+    0 10px 30px -10px rgba(0,0,0,0.08),
+    0 1px 2px rgba(0,0,0,0.04),
+    inset 0 0 0 0.5px rgba(255,255,255,0.6);
+  padding: 64px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 1s 0.25s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+}
+
+/* Stage: play */
+.stage { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.stage.hidden { display: none; }
+
+.play-btn {
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%),
+    linear-gradient(180deg, #0a84ff 0%, #0060d0 100%);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 24px 50px -12px rgba(10, 132, 255, 0.45),
+    0 8px 20px -8px rgba(10, 132, 255, 0.3),
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    inset 0 -2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+  position: relative;
+}
+.play-btn:hover {
+  transform: scale(1.04) translateY(-2px);
+  box-shadow:
+    0 32px 60px -12px rgba(10, 132, 255, 0.55),
+    0 12px 24px -8px rgba(10, 132, 255, 0.35),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -2px 6px rgba(0,0,0,0.1);
+}
+.play-btn:active { transform: scale(0.98); }
+.play-btn svg {
+  width: 54px;
+  height: 54px;
+  fill: white;
+  margin-left: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+.play-btn.playing::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px solid rgba(10, 132, 255, 0.4);
+  animation: ripple 1.6s ease-out infinite;
+}
+@keyframes ripple {
+  0% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.play-hint {
+  margin-top: 30px;
+  font-size: 15px;
+  color: var(--text-2);
+  font-weight: 400;
+  letter-spacing: -0.008em;
+}
+.play-hint kbd {
+  display: inline-block;
+  padding: 2px 7px;
+  margin: 0 2px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: #f5f5f7;
+  border: 0.5px solid var(--hairline-strong);
+  border-radius: 5px;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+}
+
+.speed-toggle {
+  margin-top: 22px;
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: #f5f5f7;
+  border-radius: 980px;
+  border: 0.5px solid var(--hairline);
+}
+.speed-btn {
+  padding: 7px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-2);
+  border: none;
+  border-radius: 980px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
+  letter-spacing: -0.005em;
+}
+.speed-btn:hover { color: var(--text); }
+.speed-btn.active {
+  background: white;
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(0,0,0,0.04);
+}
+
+.reveal-btn {
+  margin-top: 32px;
+  padding: 11px 24px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--accent);
+  border: none;
+  cursor: pointer;
+  border-radius: 980px;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: -0.005em;
+}
+.reveal-btn:hover { background: rgba(0, 113, 227, 0.08); }
+.reveal-btn .arrow { display: inline-block; transition: transform 0.2s; margin-left: 2px; }
+.reveal-btn:hover .arrow { transform: translateX(3px); }
+
+/* Stage: word */
+.word-stage { animation: revealUp 0.65s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.word-display {
+  font-size: clamp(44px, 7.5vw, 84px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+  background: linear-gradient(180deg, #1d1d1f 0%, #4a4a4d 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+  word-break: break-word;
+  padding: 0 8px;
+}
+
+.phonetic {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  min-height: 18px;
+}
+
+.replay-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+.icon-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 0.5px solid var(--hairline-strong);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  color: var(--text-2);
+}
+.icon-btn:hover {
+  background: #f5f5f7;
+  color: var(--text);
+  border-color: var(--text-3);
+  transform: translateY(-1px);
+}
+.icon-btn:active { transform: translateY(0); }
+.icon-btn svg { width: 15px; height: 15px; fill: currentColor; }
+.icon-btn .label {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 600;
+  bottom: -16px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.icon-btn { position: relative; }
+
+.detail-btn {
+  margin-top: 38px;
+  padding: 11px 22px;
+  font-size: 13px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--accent);
+  border: 0.5px solid rgba(0, 113, 227, 0.45);
+  border-radius: 980px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  letter-spacing: -0.005em;
+}
+.detail-btn:hover {
+  background: rgba(0, 113, 227, 0.06);
+  border-color: var(--accent);
+}
+.detail-btn.loaded { display: none; }
+
+/* Meaning reveal */
+.meaning {
+  width: 100%;
+  max-width: 480px;
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 0.5px solid var(--hairline);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.meaning.show { display: flex; animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.meaning-label {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.meaning-text {
+  font-size: 19px;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.015em;
+  line-height: 1.45;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(0,0,0,0.08);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.youdao-link {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--text-3);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.youdao-link:hover { color: var(--accent); }
+.youdao-link .arr { display: inline-block; transition: transform 0.2s; margin-left: 2px; }
+.youdao-link:hover .arr { transform: translate(2px, -2px); }
+
+/* Bottom controls */
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 28px 24px 44px;
+  opacity: 0;
+  animation: fadeUp 1s 0.4s forwards cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ctrl-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 0.5px solid var(--hairline-strong);
+  background: rgba(255,255,255,0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  transition: all 0.2s ease;
+}
+.ctrl-btn:hover {
+  background: white;
+  border-color: var(--text-3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+.ctrl-btn:active { transform: translateY(0); }
+.ctrl-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+.progress {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.005em;
+  min-width: 52px;
+  text-align: center;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Empty state */
+.empty {
+  text-align: center;
+  color: var(--text-3);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.empty code {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #f5f5f7;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.footer {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-3);
+  padding: 8px 24px 24px;
+  letter-spacing: 0;
+}
+
+@media (max-width: 600px) {
+  .card { padding: 48px 24px; min-height: 420px; border-radius: 22px; }
+  .play-btn { width: 124px; height: 124px; }
+  .play-btn svg { width: 46px; height: 46px; }
+  .hero { padding: 32px 16px 16px; }
+  .headline { margin-bottom: 28px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-title">听力辨词<span class="dot"></span><em>Ear Training</em></div>
+    <div class="nav-counter" id="counter">— / —</div>
+  </div>
+</nav>
+
+<main class="hero">
+  <div class="eyebrow">Listen · Recall · Reveal</div>
+  <h1 class="headline">听懂每一个<span class="gradient">陌生的音节</span>。</h1>
+
+  <div class="card" id="card">
+    <!-- Stage 1: Listen -->
+    <div class="stage" id="stagePlay">
+      <button class="play-btn" id="playBtn" aria-label="播放">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="play-hint">按 <kbd>Space</kbd> 或点击播放</div>
+      <div class="speed-toggle">
+        <button class="speed-btn active" data-speed="1">正常</button>
+        <button class="speed-btn" data-speed="0.7">慢速 0.7×</button>
+      </div>
+      <button class="reveal-btn" id="revealBtn">显示单词 <span class="arrow">→</span></button>
+    </div>
+
+    <!-- Stage 2 + 3: Word & Meaning -->
+    <div class="stage hidden" id="stageWord">
+      <div class="word-display" id="wordDisplay"></div>
+      <div class="phonetic" id="phonetic">&nbsp;</div>
+      <div class="replay-row">
+        <button class="icon-btn" id="replayNormal" title="正常速度重播">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="icon-btn" id="replaySlow" title="慢速重播">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+      </div>
+      <button class="detail-btn" id="detailBtn">查看释义</button>
+
+      <div class="meaning" id="meaning">
+        <div class="meaning-label">中文释义</div>
+        <div class="meaning-text" id="meaningText"></div>
+        <a class="youdao-link" id="youdaoLink" target="_blank" rel="noopener">在有道查看例句与更多 <span class="arr">↗</span></a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="controls">
+  <button class="ctrl-btn" id="prevBtn" title="上一个 ←">
+    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+  </button>
+  <div class="progress" id="progress">— / —</div>
+  <button class="ctrl-btn" id="nextBtn" title="下一个 →">
+    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+  </button>
+  <button class="ctrl-btn" id="shuffleBtn" title="随机">
+    <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+  </button>
+</div>
+
+<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 添加单词 · 数据来源：有道发音 + MyMemory 翻译</div>
+
+<script>
+const WORDS = __WORDS__;
+const CACHE_KEY = 'listening-vocab-cache-v1';
+const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
+
+let order = WORDS.map((_, i) => i);
+let pos = 0;
+let currentSpeed = 1;
+let audio = null;
+
+const $ = s => document.querySelector(s);
+
+function currentWord() { return WORDS[order[pos]]; }
+
+function play(speed) {
+  const word = currentWord();
+  if (!word) return;
+  if (audio) { audio.pause(); audio = null; }
+  const s = speed || currentSpeed;
+  audio = new Audio(`https://dict.youdao.com/dictvoice?audio=${encodeURIComponent(word)}&type=1`);
+  audio.playbackRate = s;
+  const btn = $('#playBtn');
+  btn.classList.add('playing');
+  audio.play().catch(() => {});
+  audio.onended = () => btn.classList.remove('playing');
+  audio.onerror = () => btn.classList.remove('playing');
+}
+
+function showPlayStage() {
+  $('#stagePlay').classList.remove('hidden');
+  $('#stageWord').classList.add('hidden');
+  $('#meaning').classList.remove('show');
+  $('#detailBtn').classList.remove('loaded');
+  $('#detailBtn').style.display = '';
+}
+
+function reveal() {
+  const w = currentWord();
+  $('#wordDisplay').textContent = w;
+  $('#youdaoLink').href = `https://www.youdao.com/result?word=${encodeURIComponent(w)}&lang=en`;
+  $('#stagePlay').classList.add('hidden');
+  $('#stageWord').classList.remove('hidden');
+  $('#stageWord').classList.remove('word-stage');
+  void $('#stageWord').offsetWidth;
+  $('#stageWord').classList.add('word-stage');
+}
+
+async function loadMeaning() {
+  const word = currentWord();
+  const m = $('#meaning');
+  const text = $('#meaningText');
+  const btn = $('#detailBtn');
+
+  if (cache[word]) {
+    text.textContent = cache[word];
+    m.classList.add('show');
+    btn.style.display = 'none';
+    return;
+  }
+
+  btn.style.display = 'none';
+  m.classList.add('show');
+  text.innerHTML = '<div class="spinner"></div>';
+
+  try {
+    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
+    const data = await res.json();
+    const translation = (data.responseData && data.responseData.translatedText) || '未找到释义';
+    cache[word] = translation;
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
+    text.textContent = translation;
+  } catch (e) {
+    text.textContent = '加载失败，请检查网络';
+  }
+}
+
+function update() {
+  if (!WORDS.length) {
+    $('#card').innerHTML = '<div class="empty">还没有添加任何单词<br><br>编辑 <code>听不出的词.md</code><br>每行写一个单词，然后重新运行 <code>build.py</code></div>';
+    $('#counter').textContent = '0';
+    $('#progress').textContent = '0 / 0';
+    return;
+  }
+  showPlayStage();
+  $('#counter').textContent = `${pos + 1} / ${WORDS.length}`;
+  $('#progress').textContent = `${pos + 1} / ${WORDS.length}`;
+  setTimeout(() => play(), 320);
+}
+
+function go(d) {
+  if (!WORDS.length) return;
+  pos = (pos + d + WORDS.length) % WORDS.length;
+  update();
+}
+
+// Events
+$('#playBtn').addEventListener('click', () => play());
+$('#revealBtn').addEventListener('click', reveal);
+$('#replayNormal').addEventListener('click', () => play(1));
+$('#replaySlow').addEventListener('click', () => play(0.7));
+$('#detailBtn').addEventListener('click', loadMeaning);
+$('#prevBtn').addEventListener('click', () => go(-1));
+$('#nextBtn').addEventListener('click', () => go(1));
+$('#shuffleBtn').addEventListener('click', () => {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  pos = 0;
+  update();
+});
+
+document.querySelectorAll('.speed-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.speed-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentSpeed = parseFloat(b.dataset.speed);
+    play();
+  });
+});
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === ' ') { e.preventDefault(); play(); }
+  else if (e.key === 'Enter') {
+    e.preventDefault();
+    if ($('#stageWord').classList.contains('hidden')) reveal();
+    else if (!$('#meaning').classList.contains('show')) loadMeaning();
+  }
+  else if (e.key === 'ArrowRight') go(1);
+  else if (e.key === 'ArrowLeft') go(-1);
+});
+
+update();
+</script>
+</body>
+</html>'''.replace('__WORDS__', words_json)
+
+
+def main():
+    if not MD.exists():
+        MD.write_text("# 听力辨词 · 听不出的词\n# 每行一个单词\n\n", encoding='utf-8')
+    words = parse(MD.read_text(encoding='utf-8'))
+    OUT.write_text(build(words), encoding='utf-8')
+    print(f"解析到 {len(words)} 个单词 → {OUT}")
+
+
+if __name__ == '__main__':
+    main()
