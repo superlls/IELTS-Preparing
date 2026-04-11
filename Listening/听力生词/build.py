@@ -926,6 +926,7 @@ $('#playBtn').addEventListener('click', () => play());
 $('#revealBtn').addEventListener('click', reveal);
 $('#replayNormal').addEventListener('click', () => play(1));
 $('#replaySlow').addEventListener('click', () => play(0.7));
+$('#hideWord').addEventListener('click', hideWord);
 $('#detailBtn').addEventListener('click', loadMeaning);
 $('#prevBtn').addEventListener('click', () => go(-1));
 $('#nextBtn').addEventListener('click', () => go(1));
