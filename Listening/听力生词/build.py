@@ -808,17 +808,16 @@ body {
 </div>
 
 <script>
-const BASE_WORDS = __WORDS__;
+let WORDS = __WORDS__;
 const CACHE_KEY = 'listening-vocab-cache-v1';
-const USER_KEY = 'listening-vocab-user-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
-let userWords = JSON.parse(localStorage.getItem(USER_KEY) || '[]');
-let WORDS = [...BASE_WORDS, ...userWords];
+const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
 let audio = null;
+let revealMode = false;
 
 const $ = s => document.querySelector(s);
 
