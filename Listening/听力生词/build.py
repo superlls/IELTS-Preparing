@@ -930,8 +930,73 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
+// Modal: add word
+function rebuildWords() {
+  WORDS = [...BASE_WORDS, ...userWords];
+  order = WORDS.map((_, i) => i);
+  if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
+  localStorage.setItem(USER_KEY, JSON.stringify(userWords));
+  renderUserList();
+  update();
+}
+
+function renderUserList() {
+  const list = $('#userList');
+  $('#userCount').textContent = userWords.length;
+  list.innerHTML = userWords.map((w, i) => `
+    <div class="user-item">
+      <span class="w">${w.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]))}</span>
+      <button class="del" data-i="${i}" title="删除">×</button>
+    </div>
+  `).join('');
+  list.querySelectorAll('.del').forEach(b => {
+    b.addEventListener('click', () => {
+      userWords.splice(parseInt(b.dataset.i), 1);
+      rebuildWords();
+    });
+  });
+}
+
+function addWord() {
+  const input = $('#wordInput');
+  const val = input.value.trim();
+  if (!val) return;
+  if (WORDS.includes(val)) {
+    input.value = '';
+    input.placeholder = '已存在：' + val;
+    setTimeout(() => { input.placeholder = '输入英文单词，如 itinerary'; }, 1600);
+    return;
+  }
+  userWords.push(val);
+  input.value = '';
+  rebuildWords();
+}
+
+function openModal() {
+  $('#modalBackdrop').classList.add('show');
+  renderUserList();
+  setTimeout(() => $('#wordInput').focus(), 100);
+}
+function closeModal() { $('#modalBackdrop').classList.remove('show'); }
+
+$('#fab').addEventListener('click', openModal);
+$('#modalClose').addEventListener('click', closeModal);
+$('#modalAdd').addEventListener('click', addWord);
+$('#wordInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); addWord(); }
+  else if (e.key === 'Escape') closeModal();
+  e.stopPropagation();
+});
+$('#modalBackdrop').addEventListener('click', e => {
+  if (e.target === $('#modalBackdrop')) closeModal();
+});
+
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if ($('#modalBackdrop').classList.contains('show')) {
+    if (e.key === 'Escape') closeModal();
+    return;
+  }
   if (e.key === ' ') { e.preventDefault(); play(); }
   else if (e.key === 'Enter') {
     e.preventDefault();
