@@ -1014,12 +1014,102 @@ update();
 </html>'''.replace('__WORDS__', words_json)
 
 
+def current_words() -> list[str]:
+    return parse(MD.read_text(encoding='utf-8'))
+
+
+def write_words(words: list[str]) -> None:
+    header = "# 听力辨词 · 听不出的词\n# 每行一个单词（# 开头为注释）\n\n"
+    MD.write_text(header + "\n".join(words) + "\n", encoding='utf-8')
+
+
+def add_word(word: str) -> bool:
+    word = word.strip()
+    if not word:
+        return False
+    words = current_words()
+    if word in words:
+        return False
+    words.append(word)
+    write_words(words)
+    return True
+
+
+def delete_word(word: str) -> bool:
+    words = current_words()
+    if word not in words:
+        return False
+    words.remove(word)
+    write_words(words)
+    return True
+
+
+class Handler(http.server.BaseHTTPRequestHandler):
+    def _send(self, status, body, ctype='application/json'):
+        data = body if isinstance(body, bytes) else body.encode('utf-8')
+        self.send_response(status)
+        self.send_header('Content-Type', f'{ctype}; charset=utf-8')
+        self.send_header('Content-Length', str(len(data)))
+        self.send_header('Cache-Control', 'no-store, must-revalidate')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        self.wfile.write(data)
+
+    def do_GET(self):
+        if self.path in ('/', '/index.html'):
+            html = build(current_words())
+            OUT.write_text(html, encoding='utf-8')
+            self._send(200, html, 'text/html')
+        elif self.path == '/api/words':
+            self._send(200, json.dumps(current_words(), ensure_ascii=False))
+        else:
+            self._send(404, json.dumps({'error': 'not found'}))
+
+    def do_POST(self):
+        length = int(self.headers.get('Content-Length', 0))
+        raw = self.rfile.read(length).decode('utf-8') if length else ''
+        try:
+            data = json.loads(raw) if raw else {}
+        except json.JSONDecodeError:
+            self._send(400, json.dumps({'error': 'invalid json'}))
+            return
+
+        if self.path == '/api/add':
+            ok = add_word(data.get('word', ''))
+            self._send(200, json.dumps({'ok': ok, 'words': current_words()}, ensure_ascii=False))
+        elif self.path == '/api/delete':
+            ok = delete_word(data.get('word', ''))
+            self._send(200, json.dumps({'ok': ok, 'words': current_words()}, ensure_ascii=False))
+        else:
+            self._send(404, json.dumps({'error': 'not found'}))
+
+    def log_message(self, fmt, *args):
+        sys.stderr.write(f"  · {fmt % args}\n")
+
+
+class ReusableTCPServer(socketserver.TCPServer):
+    allow_reuse_address = True
+
+
 def main():
     if not MD.exists():
         MD.write_text("# 听力辨词 · 听不出的词\n# 每行一个单词\n\n", encoding='utf-8')
-    words = parse(MD.read_text(encoding='utf-8'))
+
+    # 预生成一份 index.html（离线也能看静态版）
+    words = current_words()
     OUT.write_text(build(words), encoding='utf-8')
-    print(f"解析到 {len(words)} 个单词 → {OUT}")
+    print(f"📖 词库：{len(words)} 个单词")
+
+    url = f'http://127.0.0.1:{PORT}/'
+    with ReusableTCPServer(('127.0.0.1', PORT), Handler) as httpd:
+        print(f"🚀 服务已启动 → {url}")
+        print(f"   修改来源：{MD}")
+        print(f"   按 Ctrl+C 停止\n")
+        threading.Timer(0.4, lambda: webbrowser.open(url)).start()
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\n👋 已停止")
 
 
 if __name__ == '__main__':
