@@ -844,19 +844,33 @@ function showPlayStage() {
   $('#stagePlay').classList.remove('hidden');
   $('#stageWord').classList.add('hidden');
   $('#meaning').classList.remove('show');
-  $('#detailBtn').classList.remove('loaded');
   $('#detailBtn').style.display = '';
 }
 
-function reveal() {
+function showWordStage() {
   const w = currentWord();
+  if (!w) return;
   $('#wordDisplay').textContent = w;
   $('#youdaoLink').href = `https://www.youdao.com/result?word=${encodeURIComponent(w)}&lang=en`;
   $('#stagePlay').classList.add('hidden');
   $('#stageWord').classList.remove('hidden');
+  // reset meaning panel each time we land on a new word
+  $('#meaning').classList.remove('show');
+  $('#detailBtn').style.display = '';
+  // re-trigger entrance animation
   $('#stageWord').classList.remove('word-stage');
   void $('#stageWord').offsetWidth;
   $('#stageWord').classList.add('word-stage');
+}
+
+function reveal() {
+  revealMode = true;
+  showWordStage();
+}
+
+function hideWord() {
+  revealMode = false;
+  showPlayStage();
 }
 
 async function loadMeaning() {
