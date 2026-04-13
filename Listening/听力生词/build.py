@@ -666,6 +666,47 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   color: var(--ink);
   font-style: italic;
 }
+.gloss-phon {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+.gloss-list {
+  list-style: none;
+  text-align: left;
+  margin: 0 auto;
+  max-width: 380px;
+  padding: 0;
+}
+.gloss-list li {
+  font-family: "Newsreader", serif;
+  font-style: normal;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hairline-2);
+}
+.gloss-list li:last-child { border-bottom: none; }
+.gloss-web-label {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 14px 0 6px;
+}
+.gloss-web {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
 .youdao-link {
   display: inline-block;
   margin-top: 14px;
