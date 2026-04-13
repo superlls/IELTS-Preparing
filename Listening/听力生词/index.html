@@ -636,6 +636,47 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   color: var(--ink);
   font-style: italic;
 }
+.gloss-phon {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  margin-bottom: 12px;
+}
+.gloss-list {
+  list-style: none;
+  text-align: left;
+  margin: 0 auto;
+  max-width: 380px;
+  padding: 0;
+}
+.gloss-list li {
+  font-family: "Newsreader", serif;
+  font-style: normal;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--ink);
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--hairline-2);
+}
+.gloss-list li:last-child { border-bottom: none; }
+.gloss-web-label {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 14px 0 6px;
+}
+.gloss-web {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
 .youdao-link {
   display: inline-block;
   margin-top: 14px;
@@ -1372,7 +1413,7 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   <div class="imprint">
     set in <em>Fraunces</em>, <em>Newsreader</em> &amp; <em>JetBrains Mono</em>
     <span class="sep">·</span> pronunciation by Youdao
-    <span class="sep">·</span> glosses by MyMemory
+    <span class="sep">·</span> glosses by Youdao
     <span class="sep">·</span> edit <code>听不出的词.md</code> or press <kbd>+</kbd>
   </div>
 </footer>
@@ -1400,11 +1441,11 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 </div>
 
 <script>
-const BOOTSTRAP = {"words": ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable", "cat", "list"], "starred": []};
+const BOOTSTRAP = {"words": ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable", "cat", "list"], "starred": ["accommodation", "vegetarian"]};
 let ALL_WORDS = BOOTSTRAP.words;
 let STARRED = new Set(BOOTSTRAP.starred);
 let WORDS = ALL_WORDS.slice();
-const CACHE_KEY = 'listening-vocab-cache-v1';
+const CACHE_KEY = 'listening-vocab-cache-v2';
 const MODE_KEY = 'listening-deck-mode-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
@@ -1465,6 +1506,22 @@ function hideWord() {
   showPlayStage();
 }
 
+function renderGloss(d) {
+  const parts = [];
+  if (d.phonetic) parts.push(`<div class="gloss-phon">/${escapeHtml(d.phonetic)}/</div>`);
+  if (d.trans && d.trans.length) {
+    parts.push('<ul class="gloss-list">' +
+      d.trans.map(t => `<li>${escapeHtml(t)}</li>`).join('') +
+      '</ul>');
+  }
+  if (d.web && d.web.length) {
+    parts.push('<div class="gloss-web-label">— web —</div>');
+    parts.push('<div class="gloss-web">' + d.web.map(escapeHtml).join(' &middot; ') + '</div>');
+  }
+  if (!parts.length) return 'gloss not found';
+  return parts.join('');
+}
+
 async function loadMeaning() {
   const word = currentWord();
   const m = $('#meaning');
@@ -1472,7 +1529,7 @@ async function loadMeaning() {
   const btn = $('#detailBtn');
 
   if (cache[word]) {
-    text.textContent = cache[word];
+    text.innerHTML = renderGloss(cache[word]);
     m.classList.add('show');
     btn.style.display = 'none';
     return;
@@ -1483,12 +1540,23 @@ async function loadMeaning() {
   text.innerHTML = '<div class="spinner"></div>';
 
   try {
-    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
-    const data = await res.json();
-    const translation = (data.responseData && data.responseData.translatedText) || 'gloss not found';
-    cache[word] = translation;
+    let data;
+    if (hasServer) {
+      const res = await fetch(`/api/gloss?word=${encodeURIComponent(word)}`);
+      data = await res.json();
+    } else {
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
+      const j = await res.json();
+      const tr = (j.responseData && j.responseData.translatedText) || '';
+      data = { phonetic: '', trans: tr ? [tr] : [], web: [] };
+    }
+    if ((!data.trans || !data.trans.length) && (!data.web || !data.web.length)) {
+      text.textContent = 'gloss not found';
+      return;
+    }
+    cache[word] = data;
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-    text.textContent = translation;
+    text.innerHTML = renderGloss(data);
   } catch (e) {
     text.textContent = 'failed to load — check the network';
   }

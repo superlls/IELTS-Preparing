@@ -2025,8 +2025,9 @@ class Handler(http.server.BaseHTTPRequestHandler):
         sys.stderr.write(f"  · {fmt % args}\n")
 
 
-class ReusableTCPServer(socketserver.TCPServer):
+class ReusableTCPServer(socketserver.ThreadingTCPServer):
     allow_reuse_address = True
+    daemon_threads = True
 
 
 def main():
