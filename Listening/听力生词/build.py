@@ -1688,7 +1688,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
             OUT.write_text(html, encoding='utf-8')
             self._send(200, html, 'text/html')
         elif self.path == '/api/words':
-            self._send(200, json.dumps(current_words(), ensure_ascii=False))
+            self._send(200, words_payload())
         else:
             self._send(404, json.dumps({'error': 'not found'}))
 
@@ -1703,12 +1703,18 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         if self.path == '/api/add':
             ok = add_word(data.get('word', ''))
-            self._send(200, json.dumps({'ok': ok, 'words': current_words()}, ensure_ascii=False))
         elif self.path == '/api/delete':
             ok = delete_word(data.get('word', ''))
-            self._send(200, json.dumps({'ok': ok, 'words': current_words()}, ensure_ascii=False))
+        elif self.path == '/api/star':
+            ok = star_word(data.get('word', ''))
+        elif self.path == '/api/unstar':
+            ok = unstar_word(data.get('word', ''))
         else:
             self._send(404, json.dumps({'error': 'not found'}))
+            return
+
+        body = words_payload()
+        self._send(200, '{"ok": ' + ('true' if ok else 'false') + ', ' + body[1:])
 
     def log_message(self, fmt, *args):
         sys.stderr.write(f"  · {fmt % args}\n")
