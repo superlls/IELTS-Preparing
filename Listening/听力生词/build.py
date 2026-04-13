@@ -1475,7 +1475,7 @@ const BOOTSTRAP = __BOOTSTRAP__;
 let ALL_WORDS = BOOTSTRAP.words;
 let STARRED = new Set(BOOTSTRAP.starred);
 let WORDS = ALL_WORDS.slice();
-const CACHE_KEY = 'listening-vocab-cache-v1';
+const CACHE_KEY = 'listening-vocab-cache-v2';
 const MODE_KEY = 'listening-deck-mode-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
