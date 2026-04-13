@@ -1525,18 +1525,90 @@ async function loadMeaning() {
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
+function applyMode() {
+  WORDS = mode === 'starred'
+    ? ALL_WORDS.filter(w => STARRED.has(w))
+    : ALL_WORDS.slice();
+  order = WORDS.map((_, i) => i);
+  if (pos >= WORDS.length) pos = 0;
+  document.querySelectorAll('.deck-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  $('#starredCount').textContent = STARRED.size;
+}
+
+function refreshStarBtn() {
+  const w = currentWord();
+  const btn = $('#starBtn');
+  const glyph = $('#starGlyph');
+  const label = $('#starLabel');
+  if (!w) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  const on = STARRED.has(w);
+  btn.classList.toggle('starred', on);
+  glyph.textContent = on ? '★' : '☆';
+  label.textContent = on ? 'in 精听' : 'mark for 精听';
+}
+
 function update() {
   if (!WORDS.length) {
-    $('#card').innerHTML = '<div class="empty">the ledger lies empty.<br><br>edit <code>听不出的词.md</code><br>— one word per line —<br>then re-run <code>build.py</code></div>';
+    const msg = mode === 'starred'
+      ? 'no starred entries yet.<br><br>switch to <em>all entries</em>,<br>star the words you cannot hear,<br>then return for 精听.'
+      : 'the ledger lies empty.<br><br>edit <code>听不出的词.md</code><br>— one word per line —<br>then re-run <code>build.py</code>';
+    $('#stagePlay').classList.add('hidden');
+    $('#stageWord').classList.add('hidden');
+    let empty = document.getElementById('deckEmpty');
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.id = 'deckEmpty';
+      empty.className = 'deck-empty';
+      $('#card').appendChild(empty);
+    }
+    empty.innerHTML = msg;
+    empty.style.display = '';
+    $('#starBtn').style.display = 'none';
     $('#counter').textContent = '00 / 00';
     $('#progress').innerHTML = '0<span class="slash">/</span>0';
     return;
   }
+  const empty = document.getElementById('deckEmpty');
+  if (empty) empty.style.display = 'none';
   if (revealMode) showWordStage(); else showPlayStage();
+  refreshStarBtn();
   const cur = pad(pos + 1), tot = pad(WORDS.length);
   $('#counter').textContent = `${cur} / ${tot}`;
   $('#progress').innerHTML = `${cur}<span class="slash">/</span>${tot}`;
   setTimeout(() => play(), 320);
+}
+
+async function toggleStar() {
+  const w = currentWord();
+  if (!w) return;
+  const wantOn = !STARRED.has(w);
+  if (!hasServer) {
+    if (wantOn) STARRED.add(w); else STARRED.delete(w);
+    refreshStarBtn();
+    $('#starredCount').textContent = STARRED.size;
+    return;
+  }
+  const res = await fetch(wantOn ? '/api/star' : '/api/unstar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ word: w }),
+  });
+  const data = await res.json();
+  ALL_WORDS = data.words;
+  STARRED = new Set(data.starred);
+  $('#starredCount').textContent = STARRED.size;
+  if (mode === 'starred') {
+    applyMode();
+    update();
+  } else {
+    refreshStarBtn();
+  }
 }
 
 function go(d) {
