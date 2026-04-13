@@ -1184,6 +1184,63 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   .meta-column { grid-template-columns: 1fr; }
   body { padding: 0 16px 16px; }
 }
+
+/* ========= STAR + DECK MODE ========= */
+.star-corner {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  z-index: 5;
+}
+.star-btn {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  padding: 6px 12px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  transition: all 0.3s;
+}
+.star-btn:hover { color: var(--rust); border-color: var(--rust); }
+.star-btn .star-glyph {
+  font-family: "Fraunces", serif;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-muted);
+  transition: color 0.3s, transform 0.3s;
+}
+.star-btn.starred {
+  color: var(--rust);
+  border-color: var(--rust);
+  background: rgba(168, 59, 28, 0.06);
+}
+.star-btn.starred .star-glyph {
+  color: var(--rust);
+  transform: scale(1.15);
+}
+.star-count {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--ink-muted);
+}
+.deck-empty {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-muted);
+  text-align: center;
+  padding: 80px 20px;
+  line-height: 1.7;
+}
 </style>
 </head>
 <body>
