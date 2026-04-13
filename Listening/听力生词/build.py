@@ -1824,7 +1824,7 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
     if ($('#stageWord').classList.contains('hidden')) reveal();
     else if (!$('#meaning').classList.contains('show')) loadMeaning();
-    else go(1);
+    else { hideWord(); play(); }
   }
   else if (e.key === 'ArrowRight') go(1);
   else if (e.key === 'ArrowLeft') go(-1);
