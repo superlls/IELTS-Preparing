@@ -1536,6 +1536,22 @@ function hideWord() {
   showPlayStage();
 }
 
+function renderGloss(d) {
+  const parts = [];
+  if (d.phonetic) parts.push(`<div class="gloss-phon">/${escapeHtml(d.phonetic)}/</div>`);
+  if (d.trans && d.trans.length) {
+    parts.push('<ul class="gloss-list">' +
+      d.trans.map(t => `<li>${escapeHtml(t)}</li>`).join('') +
+      '</ul>');
+  }
+  if (d.web && d.web.length) {
+    parts.push('<div class="gloss-web-label">— web —</div>');
+    parts.push('<div class="gloss-web">' + d.web.map(escapeHtml).join(' &middot; ') + '</div>');
+  }
+  if (!parts.length) return 'gloss not found';
+  return parts.join('');
+}
+
 async function loadMeaning() {
   const word = currentWord();
   const m = $('#meaning');
@@ -1543,7 +1559,7 @@ async function loadMeaning() {
   const btn = $('#detailBtn');
 
   if (cache[word]) {
-    text.textContent = cache[word];
+    text.innerHTML = renderGloss(cache[word]);
     m.classList.add('show');
     btn.style.display = 'none';
     return;
@@ -1554,12 +1570,23 @@ async function loadMeaning() {
   text.innerHTML = '<div class="spinner"></div>';
 
   try {
-    const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
-    const data = await res.json();
-    const translation = (data.responseData && data.responseData.translatedText) || 'gloss not found';
-    cache[word] = translation;
+    let data;
+    if (hasServer) {
+      const res = await fetch(`/api/gloss?word=${encodeURIComponent(word)}`);
+      data = await res.json();
+    } else {
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
+      const j = await res.json();
+      const tr = (j.responseData && j.responseData.translatedText) || '';
+      data = { phonetic: '', trans: tr ? [tr] : [], web: [] };
+    }
+    if ((!data.trans || !data.trans.length) && (!data.web || !data.web.length)) {
+      text.textContent = 'gloss not found';
+      return;
+    }
+    cache[word] = data;
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
-    text.textContent = translation;
+    text.innerHTML = renderGloss(data);
   } catch (e) {
     text.textContent = 'failed to load — check the network';
   }
