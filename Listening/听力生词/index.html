@@ -3,784 +3,1327 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>听力辨词 · Ear Training</title>
+<title>The Listening Hall · 聽力辨詞</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #fbfbfd;
-  --text: #1d1d1f;
-  --text-2: #6e6e73;
-  --text-3: #86868b;
-  --hairline: rgba(0,0,0,0.08);
-  --hairline-strong: rgba(0,0,0,0.14);
-  --accent: #0071e3;
-  --card: #ffffff;
+  --paper:        #efe5cf;
+  --paper-deep:   #e5d9bc;
+  --paper-shadow: #d4c6a3;
+  --ink:          #1a140c;
+  --ink-2:        #3a2d1e;
+  --ink-muted:    #7a6a4f;
+  --rust:         #a83b1c;
+  --gold:         #8c6a2e;
+  --hairline:     rgba(26, 20, 12, 0.22);
+  --hairline-2:   rgba(26, 20, 12, 0.11);
+  --rule:         #1a140c;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+*::selection { background: var(--rust); color: var(--paper); }
 
-html, body { height: 100%; }
+html, body { min-height: 100vh; }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
-  background: var(--bg);
+  font-family: "Newsreader", "Georgia", serif;
+  font-optical-sizing: auto;
+  background: var(--paper);
   background-image:
-    radial-gradient(ellipse 70% 50% at 50% -8%, #eef2f7 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 100% 100%, #f3eef7 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 0% 80%, #eef5f3 0%, transparent 55%);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='360' height='360'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='7'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.05  0 0 0 0.13 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255, 236, 200, 0.55), transparent 60%),
+    radial-gradient(ellipse 55% 60% at 100% 100%, rgba(140, 106, 46, 0.17), transparent 60%),
+    radial-gradient(ellipse 55% 60% at 0% 100%, rgba(168, 59, 28, 0.10), transparent 60%);
+  color: var(--ink);
+  letter-spacing: 0.002em;
+  padding: 0 56px 24px;
   overflow-x: hidden;
-  letter-spacing: -0.01em;
 }
 
-/* Frosted nav */
-.nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  width: 100%;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
-  background: rgba(251, 251, 253, 0.72);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 0.5px solid var(--hairline);
+kbd {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.76em;
+  background: var(--paper-deep);
+  border: 1px solid var(--hairline);
+  border-bottom-width: 2px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--ink);
 }
-.nav-inner {
-  width: 100%;
-  max-width: 980px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.nav-title {
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-}
-.nav-title .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin: 0 10px 2px; vertical-align: middle; }
-.nav-title em { font-style: normal; color: var(--text-3); font-weight: 400; }
-.nav-counter {
-  font-size: 12px;
-  color: var(--text-3);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-}
+code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em; }
 
-/* Hero */
-.hero {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 56px 24px 24px;
-  position: relative;
+/* ========= MASTHEAD ========= */
+.masthead {
+  padding: 42px 0 18px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 28px;
+  max-width: 1240px;
+  margin: 0 auto;
+  animation: slideDown 1.1s cubic-bezier(0.2, 0.9, 0.3, 1) both;
 }
-
-.eyebrow {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+.masthead .volume,
+.masthead .date {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 14px;
-  opacity: 0;
-  animation: fadeUp 0.9s 0.05s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  color: var(--ink-muted);
 }
-
-.headline {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 600;
-  letter-spacing: -0.028em;
-  line-height: 1.08;
+.masthead .volume { justify-self: start; }
+.masthead .date   { justify-self: end; text-align: right; }
+.masthead .volume em,
+.masthead .date em {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink);
+  padding: 0 8px;
+}
+.masthead .title {
   text-align: center;
-  margin-bottom: 40px;
-  opacity: 0;
-  animation: fadeUp 0.9s 0.15s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144;
+  font-weight: 500;
+  font-size: clamp(34px, 5.4vw, 72px);
+  line-height: 0.9;
+  letter-spacing: -0.028em;
+  color: var(--ink);
+  position: relative;
 }
-.headline .gradient {
-  background: linear-gradient(135deg, #0071e3 0%, #6e5bff 50%, #a15bff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.masthead .title .amp {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--rust);
+  padding: 0 2px;
+}
+.masthead .title .sep {
+  color: var(--ink-muted);
+  font-style: normal;
+  font-weight: 300;
+  padding: 0 6px;
+  font-size: 0.85em;
+  vertical-align: 0.1em;
+}
+.masthead .title .sub {
+  display: block;
+  font-family: "Newsreader", serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: 14.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+  margin-top: 12px;
 }
 
-/* Card */
-.card {
-  width: 100%;
-  max-width: 680px;
-  min-height: 460px;
-  background: var(--card);
-  border-radius: 28px;
-  box-shadow:
-    0 30px 80px -20px rgba(0,0,0,0.15),
-    0 10px 30px -10px rgba(0,0,0,0.08),
-    0 1px 2px rgba(0,0,0,0.04),
-    inset 0 0 0 0.5px rgba(255,255,255,0.6);
-  padding: 64px 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* ========= RULES & RUNNING HEAD ========= */
+.rule-thick {
+  max-width: 1240px;
+  margin: 8px auto 0;
+  height: 5px;
+  background: var(--rule);
   position: relative;
-  opacity: 0;
-  transform: translateY(24px);
-  animation: fadeUp 1s 0.25s forwards cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  transform-origin: center;
+  animation: expandH 1.3s 0.2s cubic-bezier(0.7, 0, 0.2, 1) both;
 }
-.card::before {
+.rule-thick::after {
   content: '';
   position: absolute;
-  top: 0; left: 10%; right: 10%;
+  left: 0; right: 0;
+  bottom: -6px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+  background: var(--rule);
+}
+.running-head {
+  max-width: 1240px;
+  margin: 18px auto 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  animation: fadeUp 1s 0.55s both;
+}
+.running-head .counter {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  font-weight: 500;
+}
+.running-head .ornamental {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--rust);
+  padding: 0 10px;
+  font-size: 14px;
+}
+.rule-thin {
+  max-width: 1240px;
+  margin: 0 auto;
+  height: 1px;
+  background: var(--hairline);
 }
 
-/* Stage: play */
+/* ========= FOLIO GRID ========= */
+.folio {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 210px 1fr 250px;
+  gap: 44px;
+  padding: 36px 0 28px;
+  position: relative;
+}
+.folio::before,
+.folio::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  width: 1px;
+  background: var(--hairline-2);
+}
+.folio::before { left: 232px; }
+.folio::after  { right: 272px; }
+
+/* ========= LEFT: META COLUMN ========= */
+.meta-column {
+  padding-top: 6px;
+  animation: fadeUp 1s 0.75s both;
+}
+.meta-block { margin-bottom: 34px; }
+.meta-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-bottom: 14px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--hairline-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.meta-label::before {
+  content: '§';
+  font-family: "Fraunces", serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--rust);
+  letter-spacing: 0;
+}
+.meta-value {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144;
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.meta-value .slash {
+  color: var(--ink-muted);
+  font-style: italic;
+  font-weight: 300;
+  padding: 0 4px;
+}
+
+.tempo-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.tempo-btn {
+  all: unset;
+  cursor: pointer;
+  padding: 8px 10px 8px 14px;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  border-left: 2px solid transparent;
+  transition: all 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+  display: flex;
+  align-items: center;
+}
+.tempo-btn:hover { color: var(--ink); }
+.tempo-btn.active {
+  color: var(--ink);
+  border-left-color: var(--rust);
+  background: rgba(168, 59, 28, 0.06);
+}
+.tempo-btn::before {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 10px;
+  border: 1px solid var(--ink-muted);
+  transform: rotate(45deg);
+  transition: all 0.3s;
+}
+.tempo-btn.active::before {
+  background: var(--rust);
+  border-color: var(--rust);
+}
+
+.procedure {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.procedure .step {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.procedure .step .num {
+  font-family: "Fraunces", serif;
+  font-style: normal;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+  min-width: 24px;
+  letter-spacing: 0;
+}
+.procedure .step .desc { flex: 1; }
+.procedure .step kbd {
+  display: inline-block;
+  min-width: 22px;
+  text-align: center;
+}
+
+/* ========= CENTER: THE CHAMBER ========= */
+.chamber {
+  position: relative;
+  min-height: 580px;
+  padding: 52px 44px 60px;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
+  box-shadow:
+    0 0 0 5px var(--paper),
+    0 0 0 6px var(--ink),
+    22px 24px 0 -5px rgba(26, 20, 12, 0.08),
+    30px 34px 64px -20px rgba(26, 20, 12, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  animation: chamberIn 1.3s 0.8s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.chamber::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 0.5px solid var(--hairline);
+  pointer-events: none;
+}
+.chamber::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at top left,     var(--ink) 2px, transparent 2.5px),
+    radial-gradient(circle at top right,    var(--ink) 2px, transparent 2.5px),
+    radial-gradient(circle at bottom left,  var(--ink) 2px, transparent 2.5px),
+    radial-gradient(circle at bottom right, var(--ink) 2px, transparent 2.5px);
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  background-position:
+    14px 14px,
+    calc(100% - 14px) 14px,
+    14px calc(100% - 14px),
+    calc(100% - 14px) calc(100% - 14px);
+}
+
 .stage { width: 100%; display: flex; flex-direction: column; align-items: center; }
 .stage.hidden { display: none; }
 
-.play-btn {
-  width: 148px;
-  height: 148px;
+.stage-label {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink-muted);
+  margin-bottom: 32px;
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.stage-label::before,
+.stage-label::after {
+  content: '';
+  width: 34px;
+  height: 1px;
+  background: var(--hairline);
+}
+
+/* ----- stage 1: the dial ----- */
+.listen-dial {
+  all: unset;
+  position: relative;
+  width: 228px;
+  height: 228px;
   border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 25%, rgba(255,255,255,0.35), transparent 50%),
-    linear-gradient(180deg, #0a84ff 0%, #0060d0 100%);
-  border: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow:
-    0 24px 50px -12px rgba(10, 132, 255, 0.45),
-    0 8px 20px -8px rgba(10, 132, 255, 0.3),
-    inset 0 1px 0 rgba(255,255,255,0.35),
-    inset 0 -2px 6px rgba(0,0,0,0.1);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
-  position: relative;
+  color: var(--ink);
+  margin: 6px 0 30px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1);
 }
-.play-btn:hover {
-  transform: scale(1.04) translateY(-2px);
-  box-shadow:
-    0 32px 60px -12px rgba(10, 132, 255, 0.55),
-    0 12px 24px -8px rgba(10, 132, 255, 0.35),
-    inset 0 1px 0 rgba(255,255,255,0.4),
-    inset 0 -2px 6px rgba(0,0,0,0.1);
-}
-.play-btn:active { transform: scale(0.98); }
-.play-btn svg {
-  width: 54px;
-  height: 54px;
-  fill: white;
-  margin-left: 6px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-}
-.play-btn.playing::after {
-  content: '';
+.listen-dial:hover { transform: scale(1.02); }
+.listen-dial:active { transform: scale(0.97); }
+.listen-dial svg.dial-ring {
   position: absolute;
-  inset: -8px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.listen-dial .ring-outer { fill: none; stroke: var(--ink); stroke-width: 1.3; }
+.listen-dial .ring-mid   { fill: none; stroke: var(--ink); stroke-width: 0.6; }
+.listen-dial .ring-inner { fill: none; stroke: var(--ink); stroke-width: 0.6; stroke-dasharray: 1 3; }
+.listen-dial .tick       { stroke: var(--ink); stroke-width: 1; }
+.listen-dial .tick.major { stroke-width: 1.6; }
+.listen-dial .dial-text  {
+  fill: var(--ink-muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+.listen-dial .dial-text.roman {
+  font-family: "Fraunces", serif;
+  font-size: 11px;
+  font-style: italic;
+  letter-spacing: 1px;
+  text-transform: none;
+  fill: var(--rust);
+}
+.listen-dial .hub {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  color: var(--paper);
   border-radius: 50%;
-  border: 2px solid rgba(10, 132, 255, 0.4);
-  animation: ripple 1.6s ease-out infinite;
+  box-shadow:
+    0 10px 22px -10px rgba(26, 20, 12, 0.6),
+    inset 0 -2px 0 rgba(255, 255, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: background 0.4s;
 }
-@keyframes ripple {
-  0% { transform: scale(0.9); opacity: 1; }
-  100% { transform: scale(1.3); opacity: 0; }
+.listen-dial .hub svg {
+  width: 24px; height: 24px; fill: var(--paper);
+  margin-left: 3px;
+  transition: transform 0.4s;
 }
+.listen-dial:hover .hub svg { transform: scale(1.1); }
+.listen-dial.playing .hub { background: var(--rust); }
+
+/* ripples */
+.listen-dial .ripple {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 228px; height: 228px;
+  border: 1px solid var(--rust);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+.listen-dial.playing .ripple { animation: ripple 1.5s ease-out infinite; }
+.listen-dial.playing .ripple:nth-of-type(2) { animation-delay: 0.4s; }
+.listen-dial.playing .ripple:nth-of-type(3) { animation-delay: 0.8s; }
 
 .play-hint {
-  margin-top: 30px;
-  font-size: 15px;
-  color: var(--text-2);
-  font-weight: 400;
-  letter-spacing: -0.008em;
-}
-.play-hint kbd {
-  display: inline-block;
-  padding: 2px 7px;
-  margin: 0 2px;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text-2);
-  background: #f5f5f7;
-  border: 0.5px solid var(--hairline-strong);
-  border-radius: 5px;
-  box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-}
-
-.speed-toggle {
-  margin-top: 22px;
-  display: flex;
-  gap: 6px;
-  padding: 4px;
-  background: #f5f5f7;
-  border-radius: 980px;
-  border: 0.5px solid var(--hairline);
-}
-.speed-btn {
-  padding: 7px 16px;
-  font-size: 12px;
-  font-weight: 500;
-  background: transparent;
-  color: var(--text-2);
-  border: none;
-  border-radius: 980px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  font-family: inherit;
-  letter-spacing: -0.005em;
-}
-.speed-btn:hover { color: var(--text); }
-.speed-btn.active {
-  background: white;
-  color: var(--text);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 0 0 0.5px rgba(0,0,0,0.04);
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--ink-muted);
+  margin-bottom: 34px;
 }
 
 .reveal-btn {
-  margin-top: 32px;
-  padding: 11px 24px;
-  font-size: 13px;
-  font-weight: 500;
-  background: transparent;
-  color: var(--accent);
-  border: none;
+  all: unset;
   cursor: pointer;
-  border-radius: 980px;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  letter-spacing: -0.005em;
+  font-family: "Fraunces", serif;
+  font-weight: 400;
+  font-size: 18px;
+  font-style: italic;
+  color: var(--ink);
+  padding: 8px 4px 12px;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  transition: color 0.35s;
 }
-.reveal-btn:hover { background: rgba(0, 113, 227, 0.08); }
-.reveal-btn .arrow { display: inline-block; transition: transform 0.2s; margin-left: 2px; }
-.reveal-btn:hover .arrow { transform: translateX(3px); }
-
-/* Stage: word */
-.word-stage { animation: revealUp 0.65s cubic-bezier(0.16, 1, 0.3, 1); }
-@keyframes revealUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+.reveal-btn::before {
+  content: '';
+  position: absolute;
+  left: 4px; right: 4px; bottom: 8px;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: left;
+  transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1);
 }
+.reveal-btn::after {
+  content: '';
+  position: absolute;
+  left: 4px; right: 4px; bottom: 8px;
+  height: 1px;
+  background: var(--rust);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.65s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.reveal-btn:hover::before { transform: scaleX(0); transform-origin: right; }
+.reveal-btn:hover::after  { transform: scaleX(1); transform-origin: left; }
+.reveal-btn:hover { color: var(--rust); }
+.reveal-btn .arrow { font-family: "Fraunces", serif; font-style: normal; transition: transform 0.4s; }
+.reveal-btn:hover .arrow { transform: translateX(6px); }
 
+/* ----- stage 2: the word ----- */
 .word-display {
-  font-size: clamp(44px, 7.5vw, 84px);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-  line-height: 1.02;
-  background: linear-gradient(180deg, #1d1d1f 0%, #4a4a4d 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144;
+  font-weight: 400;
+  font-size: clamp(48px, 9.2vw, 128px);
+  line-height: 0.88;
+  letter-spacing: -0.038em;
+  color: var(--ink);
   text-align: center;
+  margin: 4px 0 18px;
   word-break: break-word;
-  padding: 0 8px;
+  max-width: 100%;
+  text-shadow:
+    0 1px 0 rgba(255, 240, 210, 0.4),
+    0 -1px 0 rgba(26, 20, 12, 0.06);
 }
+.word-stage .word-display { animation: inkIn 1.1s cubic-bezier(0.2, 0.9, 0.3, 1); }
+.word-stage .phonetic,
+.word-stage .replay-row,
+.word-stage .detail-btn { animation: fadeUp 0.9s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.word-stage .phonetic   { animation-delay: 0.28s; }
+.word-stage .replay-row { animation-delay: 0.4s;  }
+.word-stage .detail-btn { animation-delay: 0.52s; }
 
 .phonetic {
-  margin-top: 14px;
-  font-size: 14px;
-  color: var(--text-3);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-  min-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 4px 0 28px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.phonetic::before,
+.phonetic::after {
+  content: '';
+  width: 60px;
+  height: 1px;
+  background: var(--hairline);
 }
 
 .replay-row {
   display: flex;
-  gap: 10px;
-  margin-top: 24px;
+  align-items: center;
+  margin-bottom: 28px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 3px 4px 0 -1px var(--ink), 3px 4px 0 0 var(--paper);
 }
 .icon-btn {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 0.5px solid var(--hairline-strong);
-  background: white;
+  all: unset;
   cursor: pointer;
+  padding: 10px 18px;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13.5px;
+  color: var(--ink);
+  border-right: 1px solid var(--ink);
   display: flex;
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  color: var(--text-2);
+  gap: 9px;
+  transition: all 0.3s;
 }
-.icon-btn:hover {
-  background: #f5f5f7;
-  color: var(--text);
-  border-color: var(--text-3);
-  transform: translateY(-1px);
+.icon-btn:last-child { border-right: none; }
+.icon-btn:hover { background: var(--ink); color: var(--paper); }
+.icon-btn .glyph {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 13px;
 }
-.icon-btn:active { transform: translateY(0); }
-.icon-btn svg { width: 15px; height: 15px; fill: currentColor; }
-.icon-btn .label {
-  position: absolute;
-  font-size: 9px;
-  font-weight: 600;
-  bottom: -16px;
-  color: var(--text-3);
-  white-space: nowrap;
-}
-.icon-btn { position: relative; }
 
 .detail-btn {
-  margin-top: 38px;
-  padding: 11px 22px;
-  font-size: 13px;
-  font-weight: 500;
-  background: transparent;
-  color: var(--accent);
-  border: 0.5px solid rgba(0, 113, 227, 0.45);
-  border-radius: 980px;
+  all: unset;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  letter-spacing: -0.005em;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 16.5px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 3px;
+  transition: color 0.35s, border-color 0.35s;
 }
-.detail-btn:hover {
-  background: rgba(0, 113, 227, 0.06);
-  border-color: var(--accent);
-}
-.detail-btn.loaded { display: none; }
+.detail-btn:hover { color: var(--rust); border-color: var(--rust); }
 
-/* Meaning reveal */
 .meaning {
+  max-width: 460px;
   width: 100%;
-  max-width: 480px;
-  margin-top: 30px;
-  padding-top: 30px;
-  border-top: 0.5px solid var(--hairline);
-  display: none;
-  flex-direction: column;
-  align-items: center;
+  margin-top: 24px;
+  padding: 22px 26px 20px;
+  background: rgba(26, 20, 12, 0.04);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  position: relative;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: all 0.7s cubic-bezier(0.2, 0.9, 0.3, 1);
+  pointer-events: none;
   text-align: center;
 }
-.meaning.show { display: flex; animation: revealUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-
+.meaning.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
 .meaning-label {
-  font-size: 10px;
-  letter-spacing: 0.14em;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
-  color: var(--text-3);
-  margin-bottom: 12px;
-  font-weight: 600;
+  color: var(--ink-muted);
+  margin-bottom: 9px;
 }
 .meaning-text {
-  font-size: 19px;
-  font-weight: 400;
-  color: var(--text);
-  letter-spacing: -0.015em;
-  line-height: 1.45;
+  font-family: "Newsreader", serif;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ink);
+  font-style: italic;
 }
+.youdao-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 1px;
+  transition: color 0.35s, border-color 0.35s;
+}
+.youdao-link:hover { color: var(--rust); border-color: var(--rust); }
 
 .spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(0,0,0,0.08);
-  border-top-color: var(--accent);
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--hairline);
+  border-top-color: var(--rust);
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.9s linear infinite;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-.youdao-link {
-  margin-top: 18px;
+/* ========= RIGHT: MARGIN COLUMN ========= */
+.margin-column {
+  padding-top: 6px;
+  animation: fadeUp 1s 0.95s both;
+}
+.ornament {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 16px 0 10px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  position: relative;
+}
+.ornament .drop {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 144;
+  font-weight: 300;
+  font-size: 104px;
+  line-height: 0.85;
+  color: var(--rust);
+  display: block;
+}
+.ornament .caption {
+  font-family: "Newsreader", serif;
+  font-style: italic;
   font-size: 12px;
-  color: var(--text-3);
-  text-decoration: none;
-  transition: color 0.2s;
-  font-weight: 500;
-  letter-spacing: -0.005em;
+  color: var(--ink-muted);
+  margin-top: 4px;
+  letter-spacing: 0.03em;
 }
-.youdao-link:hover { color: var(--accent); }
-.youdao-link .arr { display: inline-block; transition: transform 0.2s; margin-left: 2px; }
-.youdao-link:hover .arr { transform: translate(2px, -2px); }
+.ornament::before,
+.ornament::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 30px;
+  height: 1px;
+  background: var(--rust);
+  transform: translateX(-50%);
+}
+.ornament::before { top: -1px; }
+.ornament::after  { bottom: -1px; }
 
-/* Bottom controls */
+.pull-quote {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-variation-settings: "opsz" 72;
+  font-weight: 300;
+  font-size: 21px;
+  line-height: 1.28;
+  color: var(--ink);
+  text-align: left;
+  margin: 14px 0 22px;
+  padding-left: 16px;
+  border-left: 2px solid var(--rust);
+}
+.pull-quote cite {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin-top: 14px;
+}
+.pull-quote cite::before { content: '— '; }
+
+.margin-note {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 12.5px;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  padding: 14px 0 0;
+  border-top: 1px solid var(--hairline);
+}
+.margin-note strong {
+  font-weight: 500;
+  color: var(--ink);
+  font-style: normal;
+  font-family: "Fraunces", serif;
+  font-size: 13.5px;
+}
+
+/* ========= COLOPHON / CONTROLS ========= */
+.colophon {
+  max-width: 1240px;
+  margin: 10px auto 0;
+  animation: fadeUp 1s 1.05s both;
+}
+.rule-thick-bottom {
+  height: 5px;
+  background: var(--rule);
+  position: relative;
+  margin-bottom: 8px;
+}
+.rule-thick-bottom::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: -6px;
+  height: 1px;
+  background: var(--rule);
+}
+
 .controls {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 28px 24px 44px;
-  opacity: 0;
-  animation: fadeUp 1s 0.4s forwards cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 22px 0 16px;
+  gap: 24px;
 }
 .ctrl-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 0.5px solid var(--hairline-strong);
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  all: unset;
   cursor: pointer;
-  display: flex;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 19px;
+  color: var(--ink);
+  position: relative;
+  padding: 8px 2px;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text);
-  transition: all 0.2s ease;
+  gap: 10px;
+  transition: color 0.35s, transform 0.35s;
 }
-.ctrl-btn:hover {
-  background: white;
-  border-color: var(--text-3);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-.ctrl-btn:active { transform: translateY(0); }
-.ctrl-btn svg { width: 14px; height: 14px; fill: currentColor; }
-
-.progress {
-  font-size: 13px;
+.ctrl-btn:hover { color: var(--rust); }
+#prevBtn { justify-self: start; }
+#prevBtn:hover { transform: translateX(-4px); }
+#nextBtn { justify-self: end; }
+#nextBtn:hover { transform: translateX(4px); }
+#shuffleBtn {
+  justify-self: center;
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 10.5px;
   font-weight: 500;
-  color: var(--text-2);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.005em;
-  min-width: 52px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 3px 4px 0 -1px var(--ink), 3px 4px 0 0 var(--paper);
+}
+#shuffleBtn:hover { background: var(--ink); color: var(--paper); transform: translate(-2px, -2px); }
+#shuffleBtn:active { transform: translate(1px, 1px); box-shadow: 1px 2px 0 -1px var(--ink), 1px 2px 0 0 var(--paper); }
+#shuffleBtn::before { content: '⁂'; font-family: "Fraunces", serif; font-size: 14px; margin-right: 8px; }
+
+.imprint {
   text-align: center;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 12px;
+  color: var(--ink-muted);
+  padding: 10px 0 14px;
+  border-top: 1px solid var(--hairline);
+  letter-spacing: 0.01em;
 }
+.imprint .sep { color: var(--rust); padding: 0 8px; }
+.imprint em { color: var(--ink); }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Empty state */
-.empty {
-  text-align: center;
-  color: var(--text-3);
-  font-size: 15px;
-  line-height: 1.7;
-}
-.empty code {
-  display: inline-block;
-  padding: 2px 8px;
-  background: #f5f5f7;
-  border-radius: 5px;
-  font-size: 13px;
-  color: var(--text);
-  font-family: ui-monospace, SFMono-Regular, monospace;
-}
-
-.footer {
-  text-align: center;
-  font-size: 11px;
-  color: var(--text-3);
-  padding: 8px 24px 24px;
-  letter-spacing: 0;
-}
-
-/* Floating add button */
+/* ========= FAB ========= */
 .fab {
   position: fixed;
   bottom: 28px;
   right: 28px;
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
+  border: 1.5px solid var(--ink);
+  background: var(--paper);
+  color: var(--ink);
   border-radius: 50%;
-  background: linear-gradient(180deg, #1d1d1f 0%, #000 100%);
-  border: none;
   cursor: pointer;
+  font-family: "Fraunces", serif;
+  font-size: 30px;
+  font-weight: 300;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   box-shadow:
-    0 16px 32px -8px rgba(0,0,0,0.3),
-    0 4px 12px -4px rgba(0,0,0,0.2),
-    inset 0 1px 0 rgba(255,255,255,0.12);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-  z-index: 200;
+    4px 5px 0 -1px var(--ink),
+    4px 5px 0 0 var(--paper),
+    8px 12px 34px -10px rgba(26, 20, 12, 0.42);
+  transition: all 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);
+  z-index: 90;
 }
 .fab:hover {
-  transform: translateY(-2px) scale(1.05);
+  transform: translate(-2px, -3px);
   box-shadow:
-    0 20px 40px -8px rgba(0,0,0,0.35),
-    0 6px 16px -4px rgba(0,0,0,0.22),
-    inset 0 1px 0 rgba(255,255,255,0.12);
+    6px 8px 0 -1px var(--ink),
+    6px 8px 0 0 var(--paper),
+    12px 18px 42px -8px rgba(26, 20, 12, 0.48);
+  color: var(--rust);
 }
-.fab:active { transform: translateY(0) scale(0.98); }
-.fab svg { width: 20px; height: 20px; fill: white; }
+.fab:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 2px 0 -1px var(--ink), 1px 2px 0 0 var(--paper);
+}
 
-/* Modal */
+/* ========= MODAL ========= */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.32);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  z-index: 300;
-  display: none;
+  background: rgba(26, 20, 12, 0.58);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  pointer-events: none;
+  transition: opacity 0.45s;
+  z-index: 200;
+  padding: 24px;
 }
-.modal-backdrop.show { display: flex; opacity: 1; }
-
+.modal-backdrop.show { opacity: 1; pointer-events: auto; }
 .modal {
   width: 100%;
-  max-width: 440px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: saturate(180%) blur(30px);
-  -webkit-backdrop-filter: saturate(180%) blur(30px);
-  border-radius: 22px;
-  padding: 28px 28px 24px;
+  max-width: 560px;
+  max-height: 86vh;
+  background: var(--paper);
+  border: 1.5px solid var(--ink);
   box-shadow:
-    0 40px 100px -20px rgba(0,0,0,0.35),
-    0 16px 40px -12px rgba(0,0,0,0.2),
-    inset 0 0 0 0.5px rgba(255,255,255,0.8);
-  transform: scale(0.94) translateY(8px);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    0 0 0 5px var(--paper),
+    0 0 0 6px var(--ink),
+    18px 22px 0 -5px rgba(26, 20, 12, 0.08),
+    30px 34px 80px -16px rgba(26, 20, 12, 0.45);
+  padding: 32px 34px 26px;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(18px) scale(0.97);
+  transition: transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1);
+  position: relative;
 }
-.modal-backdrop.show .modal { transform: scale(1) translateY(0); }
+.modal::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 10px; right: 10px; bottom: 10px;
+  border: 0.5px solid var(--hairline);
+  pointer-events: none;
+}
+.modal-backdrop.show .modal { transform: translateY(0) scale(1); }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  align-items: baseline;
+  margin-bottom: 6px;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 14px;
 }
 .modal-title {
-  font-size: 17px;
-  font-weight: 600;
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144;
+  font-weight: 500;
+  font-size: 34px;
   letter-spacing: -0.02em;
-  color: var(--text);
+  color: var(--ink);
+  line-height: 1;
+}
+.modal-title em {
+  font-style: italic;
+  color: var(--rust);
+  font-weight: 400;
 }
 .modal-close {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0,0,0,0.06);
-  color: var(--text-2);
+  all: unset;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-family: "JetBrains Mono", monospace;
   font-size: 14px;
-  transition: all 0.2s;
+  color: var(--ink-muted);
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  transition: all 0.3s;
 }
-.modal-close:hover { background: rgba(0,0,0,0.1); color: var(--text); }
-
+.modal-close:hover { color: var(--rust); border-color: var(--rust); }
+.modal-sub {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 12px 0 22px;
+}
 .modal-input-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  box-shadow: 3px 4px 0 -1px var(--ink), 3px 4px 0 0 var(--paper);
 }
 .modal-input {
   flex: 1;
-  padding: 12px 16px;
-  font-size: 15px;
-  font-family: inherit;
-  color: var(--text);
-  background: white;
-  border: 0.5px solid var(--hairline-strong);
-  border-radius: 12px;
-  outline: none;
-  transition: all 0.2s;
-  letter-spacing: -0.005em;
+  all: unset;
+  padding: 14px 16px;
+  font-family: "Newsreader", serif;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  border-right: 1px solid var(--ink);
 }
-.modal-input::placeholder { color: var(--text-3); }
-.modal-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
-}
+.modal-input::placeholder { color: var(--ink-muted); font-style: italic; }
 .modal-add {
-  padding: 12px 20px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
-  color: white;
-  background: var(--accent);
-  border: none;
-  border-radius: 12px;
+  all: unset;
   cursor: pointer;
-  transition: all 0.2s;
-  letter-spacing: -0.005em;
+  padding: 14px 22px;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--ink);
+  transition: all 0.3s;
 }
-.modal-add:hover { background: #0077ed; }
-.modal-add:active { transform: scale(0.97); }
-.modal-add:disabled { opacity: 0.4; cursor: not-allowed; }
+.modal-add:hover { background: var(--ink); color: var(--paper); }
 
 .modal-section {
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-3);
-  font-weight: 600;
-  margin: 18px 0 10px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--hairline);
 }
 .modal-section .count {
-  background: rgba(0,0,0,0.06);
-  padding: 2px 8px;
-  border-radius: 980px;
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 20px;
+  color: var(--rust);
+  text-transform: none;
   letter-spacing: 0;
   font-weight: 500;
 }
 
 .user-list {
-  max-height: 220px;
+  flex: 1;
   overflow-y: auto;
-  margin: 0 -6px;
-  padding: 0 6px;
+  padding-right: 6px;
+  margin-bottom: 14px;
+  max-height: 280px;
 }
-.user-list:empty::before {
-  content: '尚未添加 · 输入单词后按 Enter';
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-3);
-  padding: 24px 0;
-  letter-spacing: -0.005em;
-  text-transform: none;
-}
+.user-list::-webkit-scrollbar { width: 6px; }
+.user-list::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+
 .user-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 9px 14px;
-  background: white;
-  border: 0.5px solid var(--hairline);
-  border-radius: 10px;
-  margin-bottom: 6px;
-  transition: all 0.2s;
+  align-items: baseline;
+  padding: 12px 6px 11px;
+  border-bottom: 1px dashed var(--hairline);
+  font-family: "Newsreader", serif;
+  transition: background 0.2s;
 }
-.user-item:hover { border-color: var(--hairline-strong); }
+.user-item:hover { background: rgba(168, 59, 28, 0.06); }
 .user-item .w {
+  font-size: 16.5px;
+  color: var(--ink);
+  font-weight: 400;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.user-item .w::before {
+  content: '¶';
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  color: var(--rust);
   font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  letter-spacing: -0.01em;
+  opacity: 0.7;
 }
 .user-item .del {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  border: none;
-  background: transparent;
-  color: var(--text-3);
+  all: unset;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  transition: all 0.2s;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  padding: 4px 9px;
+  border: 1px solid transparent;
+  transition: all 0.25s;
 }
-.user-item .del:hover { background: rgba(255, 59, 48, 0.1); color: #ff3b30; }
+.user-item .del:hover { color: var(--rust); border-color: var(--rust); }
 
 .modal-hint {
-  font-size: 11px;
-  color: var(--text-3);
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 11.5px;
+  color: var(--ink-muted);
   text-align: center;
-  margin-top: 14px;
-  letter-spacing: -0.005em;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
 }
 
-@media (max-width: 600px) {
-  .card { padding: 48px 24px; min-height: 420px; border-radius: 22px; }
-  .play-btn { width: 124px; height: 124px; }
-  .play-btn svg { width: 46px; height: 46px; }
-  .hero { padding: 32px 16px 16px; }
-  .headline { margin-bottom: 28px; }
+/* ========= EMPTY STATE ========= */
+.empty {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--ink-muted);
+  text-align: center;
+  padding: 50px 20px;
+}
+.empty code {
+  background: rgba(26, 20, 12, 0.08);
+  padding: 2px 6px;
+  font-style: normal;
+  font-size: 13px;
+}
+
+/* ========= ANIMATIONS ========= */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes expandH {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes chamberIn {
+  from { opacity: 0; transform: translateY(22px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes inkIn {
+  0%   {
+    opacity: 0;
+    transform: translateY(10px);
+    clip-path: inset(0 0 100% 0);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+  }
+}
+@keyframes ripple {
+  0%   { transform: translate(-50%, -50%) scale(0.55); opacity: 0.9; }
+  100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ========= RESPONSIVE ========= */
+@media (max-width: 1100px) {
+  body { padding: 0 36px 24px; }
+  .folio { grid-template-columns: 170px 1fr 210px; gap: 32px; }
+  .folio::before { left: 186px; }
+  .folio::after  { right: 226px; }
+}
+@media (max-width: 860px) {
+  body { padding: 0 22px 20px; }
+  .folio {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .folio::before, .folio::after { display: none; }
+  .meta-column, .margin-column { padding-top: 0; }
+  .meta-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 30px;
+  }
+  .meta-block { margin-bottom: 0; }
+  .margin-column { order: 3; }
+  .masthead {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+    gap: 14px;
+    padding-top: 32px;
+  }
+  .masthead .volume, .masthead .date { justify-self: center; text-align: center; }
+  .chamber { padding: 40px 24px 46px; min-height: 480px; }
+  .listen-dial { width: 188px; height: 188px; }
+  .listen-dial .ripple { width: 188px; height: 188px; }
+  .word-display { font-size: clamp(44px, 13vw, 82px); }
+}
+@media (max-width: 520px) {
+  .meta-column { grid-template-columns: 1fr; }
+  body { padding: 0 16px 16px; }
 }
 </style>
 </head>
 <body>
 
-<nav class="nav">
-  <div class="nav-inner">
-    <div class="nav-title">听力辨词<span class="dot"></span><em>Ear Training</em></div>
-    <div class="nav-counter" id="counter">— / —</div>
-  </div>
-</nav>
+<header class="masthead">
+  <div class="volume">Vol. Ⅲ<em>№ Ⅶ</em>Quarterly</div>
+  <h1 class="title">
+    The Listening <span class="amp">Hall</span><span class="sep">·</span>聽力辨詞
+    <span class="sub">a quiet periodical of aural discernment</span>
+  </h1>
+  <div class="date">Established<em>MMXXVI</em>Anno</div>
+</header>
 
-<main class="hero">
-  <div class="eyebrow">Listen · Recall · Reveal</div>
-  <h1 class="headline">听懂每一个<span class="gradient">陌生的音节</span>。</h1>
+<div class="rule-thick"></div>
 
-  <div class="card" id="card">
-    <!-- Stage 1: Listen -->
-    <div class="stage" id="stagePlay">
-      <button class="play-btn" id="playBtn" aria-label="播放">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </button>
-      <div class="play-hint">按 <kbd>Space</kbd> 或点击播放</div>
-      <div class="speed-toggle">
-        <button class="speed-btn active" data-speed="1">正常</button>
-        <button class="speed-btn" data-speed="0.7">慢速 0.7×</button>
-      </div>
-      <button class="reveal-btn" id="revealBtn">显示单词 <span class="arrow">→</span></button>
-    </div>
-
-    <!-- Stage 2 + 3: Word & Meaning -->
-    <div class="stage hidden" id="stageWord">
-      <div class="word-display" id="wordDisplay"></div>
-      <div class="phonetic" id="phonetic">&nbsp;</div>
-      <div class="replay-row">
-        <button class="icon-btn" id="replayNormal" title="正常速度重播">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-        </button>
-        <button class="icon-btn" id="replaySlow" title="慢速重播">
-          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-        </button>
-        <button class="icon-btn" id="hideWord" title="返回听音模式">
-          <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z"/></svg>
-        </button>
-      </div>
-      <button class="detail-btn" id="detailBtn">查看释义</button>
-
-      <div class="meaning" id="meaning">
-        <div class="meaning-label">中文释义</div>
-        <div class="meaning-text" id="meaningText"></div>
-        <a class="youdao-link" id="youdaoLink" target="_blank" rel="noopener">在有道查看例句与更多 <span class="arr">↗</span></a>
-      </div>
-    </div>
-  </div>
-</main>
-
-<div class="controls">
-  <button class="ctrl-btn" id="prevBtn" title="上一个 ←">
-    <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-  </button>
-  <div class="progress" id="progress">— / —</div>
-  <button class="ctrl-btn" id="nextBtn" title="下一个 →">
-    <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-  </button>
-  <button class="ctrl-btn" id="shuffleBtn" title="随机">
-    <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
-  </button>
+<div class="running-head">
+  <span>Listen <span class="ornamental">&middot;</span> Recall <span class="ornamental">&middot;</span> Reveal</span>
+  <span class="counter" id="counter">— / —</span>
 </div>
 
-<div class="footer">编辑 <code style="font-family:ui-monospace,monospace">听不出的词.md</code> 或点右下 + 添加 · 有道发音 + MyMemory 翻译</div>
+<div class="rule-thin"></div>
 
-<button class="fab" id="fab" title="添加单词">
-  <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-</button>
+<main class="folio">
+
+  <!-- LEFT META COLUMN -->
+  <aside class="meta-column">
+    <div class="meta-block">
+      <div class="meta-label">Exercise</div>
+      <div class="meta-value" id="progress">—<span class="slash">/</span>—</div>
+    </div>
+
+    <div class="meta-block">
+      <div class="meta-label">Tempo</div>
+      <div class="tempo-toggle">
+        <button class="tempo-btn speed-btn active" data-speed="1">natural</button>
+        <button class="tempo-btn speed-btn" data-speed="0.7">adagio · 0.7×</button>
+      </div>
+    </div>
+
+    <div class="meta-block">
+      <div class="meta-label">Procedure</div>
+      <div class="procedure">
+        <div class="step"><span class="num">Ⅰ.</span><span class="desc">audition by ear</span></div>
+        <div class="step"><span class="num">Ⅱ.</span><span class="desc">recollect in silence</span></div>
+        <div class="step"><span class="num">Ⅲ.</span><span class="desc">reveal &amp; compare</span></div>
+      </div>
+    </div>
+
+    <div class="meta-block">
+      <div class="meta-label">Shortcuts</div>
+      <div class="procedure">
+        <div class="step"><span class="num"><kbd>␣</kbd></span><span class="desc">play the audio</span></div>
+        <div class="step"><span class="num"><kbd>↵</kbd></span><span class="desc">reveal / gloss</span></div>
+        <div class="step"><span class="num"><kbd>←</kbd></span><span class="desc">previous entry</span></div>
+        <div class="step"><span class="num"><kbd>→</kbd></span><span class="desc">next entry</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER: THE CHAMBER -->
+  <section class="chamber" id="card">
+
+    <!-- stage 1 -->
+    <div class="stage" id="stagePlay">
+      <div class="stage-label">the audition</div>
+      <button class="listen-dial" id="playBtn" aria-label="play">
+        <svg class="dial-ring" viewBox="0 0 228 228">
+          <circle class="ring-outer" cx="114" cy="114" r="112"/>
+          <circle class="ring-mid"   cx="114" cy="114" r="102"/>
+          <circle class="ring-inner" cx="114" cy="114" r="86"/>
+          <g>
+            <line class="tick major" x1="114" y1="8"  x2="114" y2="20"/>
+            <line class="tick major" x1="114" y1="208" x2="114" y2="220"/>
+            <line class="tick major" x1="8"   y1="114" x2="20"  y2="114"/>
+            <line class="tick major" x1="208" y1="114" x2="220" y2="114"/>
+            <line class="tick" x1="42"  y1="42"  x2="50"  y2="50"/>
+            <line class="tick" x1="178" y1="42"  x2="186" y2="50"/>
+            <line class="tick" x1="42"  y1="186" x2="50"  y2="178"/>
+            <line class="tick" x1="178" y1="186" x2="186" y2="178"/>
+          </g>
+          <text class="dial-text" x="114" y="36"  text-anchor="middle">№ AUDITION</text>
+          <text class="dial-text roman" x="114" y="204" text-anchor="middle">聆&#8202;&middot;&#8202;聽</text>
+        </svg>
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <span class="ripple"></span>
+        <span class="hub">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </span>
+      </button>
+      <div class="play-hint">press <kbd>Space</kbd> or strike the dial</div>
+      <button class="reveal-btn" id="revealBtn">
+        <span>reveal the word</span>
+        <span class="arrow">→</span>
+      </button>
+    </div>
+
+    <!-- stage 2 -->
+    <div class="stage hidden" id="stageWord">
+      <div class="stage-label">the entry</div>
+      <h2 class="word-display" id="wordDisplay"></h2>
+      <div class="phonetic" id="phonetic">an entry in the listener&rsquo;s ledger</div>
+      <div class="replay-row">
+        <button class="icon-btn" id="replayNormal"><span class="glyph">▶</span>natural</button>
+        <button class="icon-btn" id="replaySlow"><span class="glyph">▷</span>adagio</button>
+        <button class="icon-btn" id="hideWord"><span class="glyph">↺</span>listen again</button>
+      </div>
+      <button class="detail-btn" id="detailBtn">consult the lexicon</button>
+      <div class="meaning" id="meaning">
+        <div class="meaning-label">— gloss · 中文釋義 —</div>
+        <div class="meaning-text" id="meaningText"></div>
+        <a class="youdao-link" id="youdaoLink" target="_blank" rel="noopener">further, at youdao ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIGHT MARGIN COLUMN -->
+  <aside class="margin-column">
+    <div class="ornament">
+      <span class="drop">A</span>
+      <div class="caption">of ears &amp; tongues</div>
+    </div>
+
+    <blockquote class="pull-quote">
+      To hear a word truly is to meet a stranger twice — once in the ear, and once upon the page.
+      <cite>a listener&rsquo;s creed</cite>
+    </blockquote>
+
+    <div class="margin-note">
+      <strong>Nota bene.</strong> The words you cannot yet hear are the very ones worth returning to. Let them cycle until the ear no longer stumbles.
+    </div>
+  </aside>
+
+</main>
+
+<footer class="colophon">
+  <div class="rule-thick-bottom"></div>
+  <div class="controls">
+    <button class="ctrl-btn" id="prevBtn">← previous</button>
+    <button class="ctrl-btn" id="shuffleBtn">shuffle the deck</button>
+    <button class="ctrl-btn" id="nextBtn">next →</button>
+  </div>
+  <div class="imprint">
+    set in <em>Fraunces</em>, <em>Newsreader</em> &amp; <em>JetBrains Mono</em>
+    <span class="sep">·</span> pronunciation by Youdao
+    <span class="sep">·</span> glosses by MyMemory
+    <span class="sep">·</span> edit <code>听不出的词.md</code> or press <kbd>+</kbd>
+  </div>
+</footer>
+
+<button class="fab" id="fab" title="add word">＋</button>
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal" id="modal">
     <div class="modal-header">
-      <div class="modal-title">添加听不出的词</div>
-      <button class="modal-close" id="modalClose">✕</button>
+      <div class="modal-title">Editorial <em>Ledger</em></div>
+      <button class="modal-close" id="modalClose">✕ close</button>
     </div>
+    <div class="modal-sub">add or remove entries — 听不出的词.md will be rewritten automatically.</div>
     <div class="modal-input-row">
-      <input type="text" class="modal-input" id="wordInput" placeholder="输入英文单词，如 itinerary" autocomplete="off" spellcheck="false">
-      <button class="modal-add" id="modalAdd">添加</button>
+      <input type="text" class="modal-input" id="wordInput" placeholder="enter a word — e.g. itinerary" autocomplete="off" spellcheck="false">
+      <button class="modal-add" id="modalAdd">enter ↵</button>
     </div>
-    <div class="modal-section">当前词库 <span class="count" id="userCount">0</span></div>
+    <div class="modal-section">
+      <span>current ledger</span>
+      <span class="count" id="userCount">0</span>
+    </div>
     <div class="user-list" id="userList"></div>
-    <div class="modal-hint">自动写入 听不出的词.md · 刷新即重新构建</div>
+    <div class="modal-hint">auto-writes to 听不出的词.md · refresh to rebuild the page</div>
   </div>
 </div>
 
@@ -828,10 +1371,8 @@ function showWordStage() {
   $('#youdaoLink').href = `https://www.youdao.com/result?word=${encodeURIComponent(w)}&lang=en`;
   $('#stagePlay').classList.add('hidden');
   $('#stageWord').classList.remove('hidden');
-  // reset meaning panel each time we land on a new word
   $('#meaning').classList.remove('show');
   $('#detailBtn').style.display = '';
-  // re-trigger entrance animation
   $('#stageWord').classList.remove('word-stage');
   void $('#stageWord').offsetWidth;
   $('#stageWord').classList.add('word-stage');
@@ -867,25 +1408,28 @@ async function loadMeaning() {
   try {
     const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
     const data = await res.json();
-    const translation = (data.responseData && data.responseData.translatedText) || '未找到释义';
+    const translation = (data.responseData && data.responseData.translatedText) || 'gloss not found';
     cache[word] = translation;
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
     text.textContent = translation;
   } catch (e) {
-    text.textContent = '加载失败，请检查网络';
+    text.textContent = 'failed to load — check the network';
   }
 }
 
+function pad(n) { return String(n).padStart(2, '0'); }
+
 function update() {
   if (!WORDS.length) {
-    $('#card').innerHTML = '<div class="empty">还没有添加任何单词<br><br>编辑 <code>听不出的词.md</code><br>每行写一个单词，然后重新运行 <code>build.py</code></div>';
-    $('#counter').textContent = '0';
-    $('#progress').textContent = '0 / 0';
+    $('#card').innerHTML = '<div class="empty">the ledger lies empty.<br><br>edit <code>听不出的词.md</code><br>— one word per line —<br>then re-run <code>build.py</code></div>';
+    $('#counter').textContent = '00 / 00';
+    $('#progress').innerHTML = '0<span class="slash">/</span>0';
     return;
   }
   if (revealMode) showWordStage(); else showPlayStage();
-  $('#counter').textContent = `${pos + 1} / ${WORDS.length}`;
-  $('#progress').textContent = `${pos + 1} / ${WORDS.length}`;
+  const cur = pad(pos + 1), tot = pad(WORDS.length);
+  $('#counter').textContent = `${cur} / ${tot}`;
+  $('#progress').innerHTML = `${cur}<span class="slash">/</span>${tot}`;
   setTimeout(() => play(), 320);
 }
 
@@ -895,7 +1439,6 @@ function go(d) {
   update();
 }
 
-// Events
 $('#playBtn').addEventListener('click', () => play());
 $('#revealBtn').addEventListener('click', reveal);
 $('#replayNormal').addEventListener('click', () => play(1));
@@ -922,7 +1465,6 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
-// Modal: server-backed word management
 const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
 async function refreshWordsFromServer() {
@@ -942,12 +1484,12 @@ function renderUserList() {
   list.innerHTML = WORDS.map(w => `
     <div class="user-item">
       <span class="w">${escapeHtml(w)}</span>
-      <button class="del" data-w="${escapeHtml(w)}" title="删除">×</button>
+      <button class="del" data-w="${escapeHtml(w)}" title="delete">✕ remove</button>
     </div>
   `).join('');
   list.querySelectorAll('.del').forEach(b => {
     b.addEventListener('click', async () => {
-      if (!hasServer) { alert('请通过 python3 build.py 启动服务器再操作'); return; }
+      if (!hasServer) { alert('run python3 build.py to enable editing'); return; }
       await fetch('/api/delete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -964,13 +1506,13 @@ async function addWord() {
   if (!val) return;
   if (!hasServer) {
     input.value = '';
-    input.placeholder = '请通过 python3 build.py 启动服务器';
+    input.placeholder = 'run python3 build.py first';
     return;
   }
   if (WORDS.includes(val)) {
     input.value = '';
-    input.placeholder = '已存在：' + val;
-    setTimeout(() => { input.placeholder = '输入英文单词，如 itinerary'; }, 1600);
+    input.placeholder = 'already in ledger: ' + val;
+    setTimeout(() => { input.placeholder = 'enter a word — e.g. itinerary'; }, 1600);
     return;
   }
   const res = await fetch('/api/add', {
