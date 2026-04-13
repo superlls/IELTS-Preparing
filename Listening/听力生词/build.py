@@ -1311,6 +1311,13 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   <!-- CENTER: THE CHAMBER -->
   <section class="chamber" id="card">
 
+    <div class="star-corner">
+      <button class="star-btn" id="starBtn" title="star / unstar (L)">
+        <span class="star-glyph" id="starGlyph">☆</span>
+        <span id="starLabel">mark for 精听</span>
+      </button>
+    </div>
+
     <!-- stage 1 -->
     <div class="stage" id="stagePlay">
       <div class="stage-label">the audition</div>
