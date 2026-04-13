@@ -1648,8 +1648,10 @@ const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'
 async function refreshWordsFromServer() {
   try {
     const res = await fetch('/api/words', { cache: 'no-store' });
-    WORDS = await res.json();
-    order = WORDS.map((_, i) => i);
+    const data = await res.json();
+    ALL_WORDS = data.words;
+    STARRED = new Set(data.starred);
+    applyMode();
     if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
     renderUserList();
     update();
