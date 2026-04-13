@@ -1273,6 +1273,14 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
     </div>
 
     <div class="meta-block">
+      <div class="meta-label">Deck</div>
+      <div class="tempo-toggle">
+        <button class="tempo-btn deck-btn active" data-mode="all">all entries</button>
+        <button class="tempo-btn deck-btn" data-mode="starred">starred only · <span id="starredCount">0</span></button>
+      </div>
+    </div>
+
+    <div class="meta-block">
       <div class="meta-label">Tempo</div>
       <div class="tempo-toggle">
         <button class="tempo-btn speed-btn active" data-speed="1">natural</button>
