@@ -1597,7 +1597,7 @@ document.addEventListener('keydown', e => {
 update();
 </script>
 </body>
-</html>'''.replace('__WORDS__', words_json)
+</html>'''.replace('__BOOTSTRAP__', bootstrap_json)
 
 
 def current_words() -> list[str]:
