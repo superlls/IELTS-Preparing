@@ -5,6 +5,7 @@ from pathlib import Path
 
 DIR = Path(__file__).parent
 MD = DIR / "听不出的词.md"
+STARRED_MD = DIR / "精听单词.md"
 OUT = DIR / "index.html"
 PORT = 8765
 
