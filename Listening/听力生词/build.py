@@ -23,8 +23,10 @@ def parse(text: str) -> list[str]:
     return words
 
 
-def build(words: list[str]) -> str:
-    words_json = json.dumps(words, ensure_ascii=False)
+def build(words: list[str], starred: list[str] | None = None) -> str:
+    bootstrap_json = json.dumps(
+        {'words': words, 'starred': starred or []}, ensure_ascii=False
+    )
     return r'''<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
