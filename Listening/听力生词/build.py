@@ -1922,6 +1922,10 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self._send(200, html, 'text/html')
         elif self.path == '/api/words':
             self._send(200, words_payload())
+        elif self.path.startswith('/api/gloss'):
+            qs = urllib.parse.urlparse(self.path).query
+            word = urllib.parse.parse_qs(qs).get('word', [''])[0]
+            self._send(200, json.dumps(fetch_gloss(word), ensure_ascii=False))
         else:
             self._send(404, json.dumps({'error': 'not found'}))
 
