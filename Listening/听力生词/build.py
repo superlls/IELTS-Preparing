@@ -1643,6 +1643,19 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
+document.querySelectorAll('.deck-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    mode = b.dataset.mode;
+    localStorage.setItem(MODE_KEY, mode);
+    pos = 0;
+    revealMode = false;
+    applyMode();
+    update();
+  });
+});
+
+$('#starBtn').addEventListener('click', toggleStar);
+
 const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
 async function refreshWordsFromServer() {
