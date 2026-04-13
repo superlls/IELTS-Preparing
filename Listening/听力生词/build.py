@@ -1703,8 +1703,9 @@ async function addWord() {
   const data = await res.json();
   input.value = '';
   if (data.ok) {
-    WORDS = data.words;
-    order = WORDS.map((_, i) => i);
+    ALL_WORDS = data.words;
+    STARRED = new Set(data.starred);
+    applyMode();
     renderUserList();
     update();
   }
