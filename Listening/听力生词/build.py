@@ -1429,11 +1429,16 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 </div>
 
 <script>
-let WORDS = __WORDS__;
+const BOOTSTRAP = __BOOTSTRAP__;
+let ALL_WORDS = BOOTSTRAP.words;
+let STARRED = new Set(BOOTSTRAP.starred);
+let WORDS = ALL_WORDS.slice();
 const CACHE_KEY = 'listening-vocab-cache-v1';
+const MODE_KEY = 'listening-deck-mode-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
+let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
