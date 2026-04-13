@@ -23,7 +23,7 @@ def parse(text: str) -> list[str]:
     return words
 
 
-def build(words: list[str], starred: list[str] | None = None) -> str:
+def build(words, starred=None):
     bootstrap_json = json.dumps(
         {'words': words, 'starred': starred or []}, ensure_ascii=False
     )
