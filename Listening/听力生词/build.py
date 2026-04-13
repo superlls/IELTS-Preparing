@@ -1732,8 +1732,9 @@ def main():
 
     # 预生成一份 index.html（离线也能看静态版）
     words = current_words()
-    OUT.write_text(build(words), encoding='utf-8')
-    print(f"📖 词库：{len(words)} 个单词")
+    starred = current_starred()
+    OUT.write_text(build(words, starred), encoding='utf-8')
+    print(f"📖 词库：{len(words)} 个单词 · ⭐ 收藏：{len(starred)}")
 
     url = f'http://127.0.0.1:{PORT}/'
     with ReusableTCPServer(('127.0.0.1', PORT), Handler) as httpd:
