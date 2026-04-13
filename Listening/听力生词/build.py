@@ -1686,7 +1686,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path in ('/', '/index.html'):
-            html = build(current_words())
+            html = build(current_words(), current_starred())
             OUT.write_text(html, encoding='utf-8')
             self._send(200, html, 'text/html')
         elif self.path == '/api/words':
