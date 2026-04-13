@@ -1834,6 +1834,69 @@ def unstar_word(word: str) -> bool:
     return True
 
 
+_gloss_cache = {}
+
+
+def fetch_gloss(word: str) -> dict:
+    word = (word or '').strip()
+    if not word:
+        return {'phonetic': '', 'trans': [], 'web': []}
+    if word in _gloss_cache:
+        return _gloss_cache[word]
+
+    url = f'https://dict.youdao.com/jsonapi?q={urllib.parse.quote(word)}'
+    try:
+        req = urllib.request.Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15) AppleWebKit/537.36',
+            'Referer': 'https://dict.youdao.com/',
+        })
+        with urllib.request.urlopen(req, timeout=6) as r:
+            data = json.loads(r.read().decode('utf-8', errors='replace'))
+    except Exception as e:
+        return {'phonetic': '', 'trans': [], 'web': [], 'error': str(e)}
+
+    phonetic = ''
+    trans = []
+    try:
+        ec_word_list = (data.get('ec') or {}).get('word') or []
+        if ec_word_list:
+            w = ec_word_list[0]
+            phonetic = w.get('usphone') or w.get('ukphone') or ''
+            for t in (w.get('trs') or []):
+                try:
+                    line = t['tr'][0]['l']['i'][0]
+                    if isinstance(line, str) and line.strip():
+                        trans.append(line.strip())
+                except (KeyError, IndexError, TypeError):
+                    pass
+    except Exception:
+        pass
+
+    if not trans:
+        try:
+            for t in (data.get('simple') or {}).get('word', [{}])[0].get('trs', []) or []:
+                line = t.get('tr', [{}])[0].get('l', {}).get('i')
+                if isinstance(line, str) and line.strip():
+                    trans.append(line.strip())
+        except Exception:
+            pass
+
+    web = []
+    try:
+        wt_list = (data.get('web_trans') or {}).get('web-translation') or []
+        if wt_list:
+            for v in (wt_list[0].get('trans') or [])[:6]:
+                val = v.get('value')
+                if val:
+                    web.append(val)
+    except Exception:
+        pass
+
+    result = {'phonetic': phonetic, 'trans': trans, 'web': web}
+    _gloss_cache[word] = result
+    return result
+
+
 def words_payload() -> str:
     return json.dumps(
         {'words': current_words(), 'starred': current_starred()},
