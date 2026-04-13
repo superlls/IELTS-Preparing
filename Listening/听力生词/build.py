@@ -1443,7 +1443,7 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   <div class="imprint">
     set in <em>Fraunces</em>, <em>Newsreader</em> &amp; <em>JetBrains Mono</em>
     <span class="sep">·</span> pronunciation by Youdao
-    <span class="sep">·</span> glosses by MyMemory
+    <span class="sep">·</span> glosses by Youdao
     <span class="sep">·</span> edit <code>听不出的词.md</code> or press <kbd>+</kbd>
   </div>
 </footer>
