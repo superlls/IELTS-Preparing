@@ -1607,6 +1607,17 @@ def write_words(words: list[str]) -> None:
     MD.write_text(header + "\n".join(words) + "\n", encoding='utf-8')
 
 
+def current_starred() -> list[str]:
+    if not STARRED_MD.exists():
+        return []
+    return parse(STARRED_MD.read_text(encoding='utf-8'))
+
+
+def write_starred(words: list[str]) -> None:
+    header = "# 听力辨词 · 精听收藏\n# 每行一个单词（# 开头为注释）\n\n"
+    STARRED_MD.write_text(header + "\n".join(words) + "\n", encoding='utf-8')
+
+
 def add_word(word: str) -> bool:
     word = word.strip()
     if not word:
@@ -1625,7 +1636,39 @@ def delete_word(word: str) -> bool:
         return False
     words.remove(word)
     write_words(words)
+    starred = current_starred()
+    if word in starred:
+        starred.remove(word)
+        write_starred(starred)
     return True
+
+
+def star_word(word: str) -> bool:
+    word = word.strip()
+    if not word or word not in current_words():
+        return False
+    starred = current_starred()
+    if word in starred:
+        return False
+    starred.append(word)
+    write_starred(starred)
+    return True
+
+
+def unstar_word(word: str) -> bool:
+    starred = current_starred()
+    if word not in starred:
+        return False
+    starred.remove(word)
+    write_starred(starred)
+    return True
+
+
+def words_payload() -> str:
+    return json.dumps(
+        {'words': current_words(), 'starred': current_starred()},
+        ensure_ascii=False,
+    )
 
 
 class Handler(http.server.BaseHTTPRequestHandler):
