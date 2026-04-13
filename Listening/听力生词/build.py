@@ -1757,8 +1757,10 @@ document.addEventListener('keydown', e => {
   }
   else if (e.key === 'ArrowRight') go(1);
   else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === 'l' || e.key === 'L') { e.preventDefault(); toggleStar(); }
 });
 
+applyMode();
 update();
 </script>
 </body>
