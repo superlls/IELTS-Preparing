@@ -1155,6 +1155,63 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   .meta-column { grid-template-columns: 1fr; }
   body { padding: 0 16px 16px; }
 }
+
+/* ========= STAR + DECK MODE ========= */
+.star-corner {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  z-index: 5;
+}
+.star-btn {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  font-size: 13px;
+  color: var(--ink-muted);
+  padding: 6px 12px;
+  border: 1px solid var(--hairline);
+  background: var(--paper);
+  transition: all 0.3s;
+}
+.star-btn:hover { color: var(--rust); border-color: var(--rust); }
+.star-btn .star-glyph {
+  font-family: "Fraunces", serif;
+  font-style: normal;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink-muted);
+  transition: color 0.3s, transform 0.3s;
+}
+.star-btn.starred {
+  color: var(--rust);
+  border-color: var(--rust);
+  background: rgba(168, 59, 28, 0.06);
+}
+.star-btn.starred .star-glyph {
+  color: var(--rust);
+  transform: scale(1.15);
+}
+.star-count {
+  font-family: "JetBrains Mono", monospace;
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--ink-muted);
+}
+.deck-empty {
+  font-family: "Fraunces", serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--ink-muted);
+  text-align: center;
+  padding: 80px 20px;
+  line-height: 1.7;
+}
 </style>
 </head>
 <body>
@@ -1187,6 +1244,14 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
     </div>
 
     <div class="meta-block">
+      <div class="meta-label">Deck</div>
+      <div class="tempo-toggle">
+        <button class="tempo-btn deck-btn active" data-mode="all">all entries</button>
+        <button class="tempo-btn deck-btn" data-mode="starred">starred only · <span id="starredCount">0</span></button>
+      </div>
+    </div>
+
+    <div class="meta-block">
       <div class="meta-label">Tempo</div>
       <div class="tempo-toggle">
         <button class="tempo-btn speed-btn active" data-speed="1">natural</button>
@@ -1216,6 +1281,13 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 
   <!-- CENTER: THE CHAMBER -->
   <section class="chamber" id="card">
+
+    <div class="star-corner">
+      <button class="star-btn" id="starBtn" title="star / unstar (L)">
+        <span class="star-glyph" id="starGlyph">☆</span>
+        <span id="starLabel">mark for 精听</span>
+      </button>
+    </div>
 
     <!-- stage 1 -->
     <div class="stage" id="stagePlay">
@@ -1328,11 +1400,16 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 </div>
 
 <script>
-let WORDS = ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable", "cat", "list"];
+const BOOTSTRAP = {"words": ["accommodation", "itinerary", "questionnaire", "pedestrian", "refurbishment", "archaeology", "thermometer", "entrepreneur", "vegetarian", "temperature", "aluminium", "stationery", "vehicle", "restaurant", "comfortable", "cat", "list"], "starred": []};
+let ALL_WORDS = BOOTSTRAP.words;
+let STARRED = new Set(BOOTSTRAP.starred);
+let WORDS = ALL_WORDS.slice();
 const CACHE_KEY = 'listening-vocab-cache-v1';
+const MODE_KEY = 'listening-deck-mode-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
+let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
@@ -1419,18 +1496,90 @@ async function loadMeaning() {
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
+function applyMode() {
+  WORDS = mode === 'starred'
+    ? ALL_WORDS.filter(w => STARRED.has(w))
+    : ALL_WORDS.slice();
+  order = WORDS.map((_, i) => i);
+  if (pos >= WORDS.length) pos = 0;
+  document.querySelectorAll('.deck-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  $('#starredCount').textContent = STARRED.size;
+}
+
+function refreshStarBtn() {
+  const w = currentWord();
+  const btn = $('#starBtn');
+  const glyph = $('#starGlyph');
+  const label = $('#starLabel');
+  if (!w) {
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = '';
+  const on = STARRED.has(w);
+  btn.classList.toggle('starred', on);
+  glyph.textContent = on ? '★' : '☆';
+  label.textContent = on ? 'in 精听' : 'mark for 精听';
+}
+
 function update() {
   if (!WORDS.length) {
-    $('#card').innerHTML = '<div class="empty">the ledger lies empty.<br><br>edit <code>听不出的词.md</code><br>— one word per line —<br>then re-run <code>build.py</code></div>';
+    const msg = mode === 'starred'
+      ? 'no starred entries yet.<br><br>switch to <em>all entries</em>,<br>star the words you cannot hear,<br>then return for 精听.'
+      : 'the ledger lies empty.<br><br>edit <code>听不出的词.md</code><br>— one word per line —<br>then re-run <code>build.py</code>';
+    $('#stagePlay').classList.add('hidden');
+    $('#stageWord').classList.add('hidden');
+    let empty = document.getElementById('deckEmpty');
+    if (!empty) {
+      empty = document.createElement('div');
+      empty.id = 'deckEmpty';
+      empty.className = 'deck-empty';
+      $('#card').appendChild(empty);
+    }
+    empty.innerHTML = msg;
+    empty.style.display = '';
+    $('#starBtn').style.display = 'none';
     $('#counter').textContent = '00 / 00';
     $('#progress').innerHTML = '0<span class="slash">/</span>0';
     return;
   }
+  const empty = document.getElementById('deckEmpty');
+  if (empty) empty.style.display = 'none';
   if (revealMode) showWordStage(); else showPlayStage();
+  refreshStarBtn();
   const cur = pad(pos + 1), tot = pad(WORDS.length);
   $('#counter').textContent = `${cur} / ${tot}`;
   $('#progress').innerHTML = `${cur}<span class="slash">/</span>${tot}`;
   setTimeout(() => play(), 320);
+}
+
+async function toggleStar() {
+  const w = currentWord();
+  if (!w) return;
+  const wantOn = !STARRED.has(w);
+  if (!hasServer) {
+    if (wantOn) STARRED.add(w); else STARRED.delete(w);
+    refreshStarBtn();
+    $('#starredCount').textContent = STARRED.size;
+    return;
+  }
+  const res = await fetch(wantOn ? '/api/star' : '/api/unstar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ word: w }),
+  });
+  const data = await res.json();
+  ALL_WORDS = data.words;
+  STARRED = new Set(data.starred);
+  $('#starredCount').textContent = STARRED.size;
+  if (mode === 'starred') {
+    applyMode();
+    update();
+  } else {
+    refreshStarBtn();
+  }
 }
 
 function go(d) {
@@ -1465,13 +1614,28 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
+document.querySelectorAll('.deck-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    mode = b.dataset.mode;
+    localStorage.setItem(MODE_KEY, mode);
+    pos = 0;
+    revealMode = false;
+    applyMode();
+    update();
+  });
+});
+
+$('#starBtn').addEventListener('click', toggleStar);
+
 const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
 async function refreshWordsFromServer() {
   try {
     const res = await fetch('/api/words', { cache: 'no-store' });
-    WORDS = await res.json();
-    order = WORDS.map((_, i) => i);
+    const data = await res.json();
+    ALL_WORDS = data.words;
+    STARRED = new Set(data.starred);
+    applyMode();
     if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
     renderUserList();
     update();
@@ -1523,8 +1687,9 @@ async function addWord() {
   const data = await res.json();
   input.value = '';
   if (data.ok) {
-    WORDS = data.words;
-    order = WORDS.map((_, i) => i);
+    ALL_WORDS = data.words;
+    STARRED = new Set(data.starred);
+    applyMode();
     renderUserList();
     update();
   }
@@ -1563,8 +1728,10 @@ document.addEventListener('keydown', e => {
   }
   else if (e.key === 'ArrowRight') go(1);
   else if (e.key === 'ArrowLeft') go(-1);
+  else if (e.key === 'l' || e.key === 'L') { e.preventDefault(); toggleStar(); }
 });
 
+applyMode();
 update();
 </script>
 </body>

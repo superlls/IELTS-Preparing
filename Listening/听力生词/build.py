@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """听力辨词卡：听音 → 看词 → 按需查释义（HTTP 服务器模式）"""
 import json, http.server, socketserver, webbrowser, threading, sys
+import urllib.parse, urllib.request
 from pathlib import Path
 
 DIR = Path(__file__).parent
