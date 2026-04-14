@@ -1635,7 +1635,12 @@ function update() {
   }
   const empty = document.getElementById('deckEmpty');
   if (empty) empty.style.display = 'none';
-  if (revealMode) showWordStage(); else showPlayStage();
+  if (revealMode) {
+    showWordStage();
+    if (glossMode) loadMeaning();
+  } else {
+    showPlayStage();
+  }
   refreshStarBtn();
   const cur = pad(pos + 1), tot = pad(WORDS.length);
   $('#counter').textContent = `${cur} / ${tot}`;
