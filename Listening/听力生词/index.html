@@ -1570,6 +1570,7 @@ async function loadMeaning() {
     cache[word] = data;
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
     text.innerHTML = renderGloss(data);
+    glossMode = true;
   } catch (e) {
     text.textContent = 'failed to load — check the network';
   }
