@@ -1734,6 +1734,13 @@ document.querySelectorAll('.speed-btn').forEach(b => {
   });
 });
 
+$('#autoBtn').addEventListener('click', () => {
+  autoPlay = !autoPlay;
+  const btn = $('#autoBtn');
+  btn.textContent = autoPlay ? 'autoplay · on' : 'autoplay · off';
+  btn.classList.toggle('active', autoPlay);
+});
+
 document.querySelectorAll('.deck-btn').forEach(b => {
   b.addEventListener('click', () => {
     mode = b.dataset.mode;
