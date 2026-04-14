@@ -1564,6 +1564,7 @@ async function loadMeaning() {
     text.innerHTML = renderGloss(cache[word]);
     m.classList.add('show');
     btn.style.display = 'none';
+    glossMode = true;
     return;
   }
 
