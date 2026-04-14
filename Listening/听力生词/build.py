@@ -1511,7 +1511,10 @@ function play(speed) {
   const btn = $('#playBtn');
   btn.classList.add('playing');
   audio.play().catch(() => {});
-  audio.onended = () => btn.classList.remove('playing');
+  audio.onended = () => {
+    btn.classList.remove('playing');
+    if (autoPlay) { go(1); play(); }
+  };
   audio.onerror = () => btn.classList.remove('playing');
 }
 
