@@ -1493,6 +1493,7 @@ let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
+let autoPlay = false;
 let audio = null;
 let revealMode = false;
 let glossMode = false;
