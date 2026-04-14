@@ -1712,11 +1712,28 @@ $('#detailBtn').addEventListener('click', loadMeaning);
 $('#prevBtn').addEventListener('click', () => go(-1));
 $('#nextBtn').addEventListener('click', () => go(1));
 $('#shuffleBtn').addEventListener('click', () => {
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
+  if (!shuffled) {
+    shuffled = true;
+    localStorage.setItem(SHUFFLE_KEY, '1');
+    order = WORDS.map((_, i) => i);
   }
+  shuffleOrder();
   pos = 0;
+  const sb = $('#shuffleBtn');
+  sb.classList.add('active');
+  sb.textContent = 'shuffled · reshuffle';
+  update();
+});
+
+$('#shuffleBtn').addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+  shuffled = false;
+  localStorage.removeItem(SHUFFLE_KEY);
+  order = WORDS.map((_, i) => i);
+  pos = 0;
+  const sb = $('#shuffleBtn');
+  sb.classList.remove('active');
+  sb.textContent = 'shuffle the deck';
   update();
 });
 
