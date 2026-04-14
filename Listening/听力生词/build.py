@@ -1497,10 +1497,45 @@ let autoPlay = false;
 let audio = null;
 let revealMode = false;
 let glossMode = false;
+let meaningRequestToken = 0;
+let meaningAbortController = null;
 
 const $ = s => document.querySelector(s);
 
 function currentWord() { return WORDS[order[pos]]; }
+
+function cancelMeaningRequest() {
+  meaningRequestToken += 1;
+  if (meaningAbortController) {
+    meaningAbortController.abort();
+    meaningAbortController = null;
+  }
+}
+
+function orderedWordsSnapshot() {
+  return order.map(i => WORDS[i]).filter(Boolean);
+}
+
+function buildOrder(nextWords, prevOrderedWords) {
+  const indexByWord = new Map(nextWords.map((w, i) => [w, i]));
+  const nextOrder = [];
+  const seen = new Set();
+
+  prevOrderedWords.forEach(w => {
+    const idx = indexByWord.get(w);
+    if (idx === undefined || seen.has(w)) return;
+    nextOrder.push(idx);
+    seen.add(w);
+  });
+
+  nextWords.forEach((w, idx) => {
+    if (seen.has(w)) return;
+    nextOrder.push(idx);
+    seen.add(w);
+  });
+
+  return nextOrder;
+}
 
 function play(speed) {
   const word = currentWord();
@@ -1546,6 +1581,7 @@ function reveal() {
 }
 
 function hideWord() {
+  cancelMeaningRequest();
   revealMode = false;
   glossMode = false;
   showPlayStage();
@@ -1572,8 +1608,15 @@ async function loadMeaning() {
   const m = $('#meaning');
   const text = $('#meaningText');
   const btn = $('#detailBtn');
+  const requestToken = ++meaningRequestToken;
+
+  if (meaningAbortController) {
+    meaningAbortController.abort();
+    meaningAbortController = null;
+  }
 
   if (cache[word]) {
+    if (requestToken !== meaningRequestToken || word !== currentWord()) return;
     text.innerHTML = renderGloss(cache[word]);
     m.classList.add('show');
     btn.style.display = 'none';
@@ -1587,15 +1630,21 @@ async function loadMeaning() {
 
   try {
     let data;
+    meaningAbortController = new AbortController();
     if (hasServer) {
-      const res = await fetch(`/api/gloss?word=${encodeURIComponent(word)}`);
+      const res = await fetch(`/api/gloss?word=${encodeURIComponent(word)}`, {
+        signal: meaningAbortController.signal,
+      });
       data = await res.json();
     } else {
-      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`);
+      const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|zh-CN`, {
+        signal: meaningAbortController.signal,
+      });
       const j = await res.json();
       const tr = (j.responseData && j.responseData.translatedText) || '';
       data = { phonetic: '', trans: tr ? [tr] : [], web: [] };
     }
+    if (requestToken !== meaningRequestToken || word !== currentWord()) return;
     if ((!data.trans || !data.trans.length) && (!data.web || !data.web.length)) {
       text.textContent = 'gloss not found';
       return;
@@ -1605,18 +1654,35 @@ async function loadMeaning() {
     text.innerHTML = renderGloss(data);
     glossMode = true;
   } catch (e) {
+    if (e.name === 'AbortError') return;
+    if (requestToken !== meaningRequestToken || word !== currentWord()) return;
     text.textContent = 'failed to load — check the network';
+  } finally {
+    if (requestToken === meaningRequestToken) {
+      meaningAbortController = null;
+    }
   }
 }
 
 function pad(n) { return String(n).padStart(2, '0'); }
 
-function applyMode() {
+function applyMode({ keepOrder = false, resetPos = false, anchorWord = currentWord() } = {}) {
+  const prevOrderedWords = keepOrder ? orderedWordsSnapshot() : [];
+  const prevPos = pos;
   WORDS = mode === 'starred'
     ? ALL_WORDS.filter(w => STARRED.has(w))
     : ALL_WORDS.slice();
-  order = WORDS.map((_, i) => i);
-  if (pos >= WORDS.length) pos = 0;
+  order = keepOrder ? buildOrder(WORDS, prevOrderedWords) : WORDS.map((_, i) => i);
+  if (!WORDS.length) {
+    pos = 0;
+  } else if (resetPos) {
+    pos = 0;
+  } else if (anchorWord && WORDS.includes(anchorWord)) {
+    const nextPos = order.findIndex(i => WORDS[i] === anchorWord);
+    pos = nextPos >= 0 ? nextPos : Math.min(prevPos, WORDS.length - 1);
+  } else {
+    pos = Math.min(prevPos, WORDS.length - 1);
+  }
   document.querySelectorAll('.deck-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
@@ -1678,11 +1744,13 @@ function update() {
 async function toggleStar() {
   const w = currentWord();
   if (!w) return;
+  cancelMeaningRequest();
   const wantOn = !STARRED.has(w);
   if (!hasServer) {
     if (wantOn) STARRED.add(w); else STARRED.delete(w);
-    refreshStarBtn();
-    $('#starredCount').textContent = STARRED.size;
+    applyMode({ keepOrder: true, anchorWord: w });
+    if (mode === 'starred') update();
+    else refreshStarBtn();
     return;
   }
   const res = await fetch(wantOn ? '/api/star' : '/api/unstar', {
@@ -1693,9 +1761,8 @@ async function toggleStar() {
   const data = await res.json();
   ALL_WORDS = data.words;
   STARRED = new Set(data.starred);
-  $('#starredCount').textContent = STARRED.size;
+  applyMode({ keepOrder: true, anchorWord: w });
   if (mode === 'starred') {
-    applyMode();
     update();
   } else {
     refreshStarBtn();
@@ -1704,6 +1771,7 @@ async function toggleStar() {
 
 function go(d) {
   if (!WORDS.length) return;
+  cancelMeaningRequest();
   pos = (pos + d + WORDS.length) % WORDS.length;
   update();
 }
@@ -1748,7 +1816,8 @@ document.querySelectorAll('.deck-btn').forEach(b => {
     pos = 0;
     revealMode = false;
     glossMode = false;
-    applyMode();
+    cancelMeaningRequest();
+    applyMode({ resetPos: true });
     update();
   });
 });
@@ -1757,23 +1826,24 @@ $('#starBtn').addEventListener('click', toggleStar);
 
 const escapeHtml = s => s.replace(/[<>&"']/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&#39;'}[c]));
 
-async function refreshWordsFromServer() {
+async function refreshWordsFromServer({ syncDeck = true } = {}) {
   try {
     const res = await fetch('/api/words', { cache: 'no-store' });
     const data = await res.json();
     ALL_WORDS = data.words;
     STARRED = new Set(data.starred);
-    applyMode();
-    if (pos >= WORDS.length) pos = Math.max(0, WORDS.length - 1);
-    renderUserList();
+    renderUserList(data.words);
+    if (!syncDeck) return;
+    cancelMeaningRequest();
+    applyMode({ keepOrder: true });
     update();
   } catch (e) { console.error(e); }
 }
 
-function renderUserList() {
+function renderUserList(words = ALL_WORDS) {
   const list = $('#userList');
-  $('#userCount').textContent = WORDS.length;
-  list.innerHTML = WORDS.map(w => `
+  $('#userCount').textContent = words.length;
+  list.innerHTML = words.map(w => `
     <div class="user-item">
       <span class="w">${escapeHtml(w)}</span>
       <button class="del" data-w="${escapeHtml(w)}" title="delete">✕ remove</button>
@@ -1801,7 +1871,7 @@ async function addWord() {
     input.placeholder = 'run python3 build.py first';
     return;
   }
-  if (WORDS.includes(val)) {
+  if (ALL_WORDS.includes(val)) {
     input.value = '';
     input.placeholder = 'already in ledger: ' + val;
     setTimeout(() => { input.placeholder = 'enter a word — e.g. itinerary'; }, 1600);
@@ -1817,15 +1887,15 @@ async function addWord() {
   if (data.ok) {
     ALL_WORDS = data.words;
     STARRED = new Set(data.starred);
-    applyMode();
-    renderUserList();
+    applyMode({ keepOrder: true });
+    renderUserList(data.words);
     update();
   }
 }
 
 function openModal() {
   $('#modalBackdrop').classList.add('show');
-  if (hasServer) refreshWordsFromServer(); else renderUserList();
+  if (hasServer) refreshWordsFromServer({ syncDeck: false }); else renderUserList(ALL_WORDS);
   setTimeout(() => $('#wordInput').focus(), 100);
 }
 function closeModal() { $('#modalBackdrop').classList.remove('show'); }
