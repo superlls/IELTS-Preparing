@@ -882,6 +882,7 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 #shuffleBtn:hover { background: var(--ink); color: var(--paper); transform: translate(-2px, -2px); }
 #shuffleBtn:active { transform: translate(1px, 1px); box-shadow: 1px 2px 0 -1px var(--ink), 1px 2px 0 0 var(--paper); }
 #shuffleBtn::before { content: '⁂'; font-family: "Fraunces", serif; font-size: 14px; margin-right: 8px; }
+#shuffleBtn.active { background: var(--ink); color: var(--paper); }
 
 .imprint {
   text-align: center;
