@@ -1692,7 +1692,6 @@ async function toggleStar() {
 function go(d) {
   if (!WORDS.length) return;
   pos = (pos + d + WORDS.length) % WORDS.length;
-  revealMode = false;
   update();
 }
 
