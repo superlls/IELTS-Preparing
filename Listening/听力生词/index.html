@@ -1303,6 +1303,13 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
     </div>
 
     <div class="meta-block">
+      <div class="meta-label">Auto</div>
+      <div class="tempo-toggle">
+        <button class="tempo-btn" id="autoBtn">autoplay · off</button>
+      </div>
+    </div>
+
+    <div class="meta-block">
       <div class="meta-label">Procedure</div>
       <div class="procedure">
         <div class="step"><span class="num">Ⅰ.</span><span class="desc">audition by ear</span></div>
@@ -1456,6 +1463,7 @@ let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
 let order = WORDS.map((_, i) => i);
 let pos = 0;
 let currentSpeed = 1;
+let autoPlay = false;
 let audio = null;
 let revealMode = false;
 let glossMode = false;
@@ -1474,7 +1482,10 @@ function play(speed) {
   const btn = $('#playBtn');
   btn.classList.add('playing');
   audio.play().catch(() => {});
-  audio.onended = () => btn.classList.remove('playing');
+  audio.onended = () => {
+    btn.classList.remove('playing');
+    if (autoPlay) { go(1); play(); }
+  };
   audio.onerror = () => btn.classList.remove('playing');
 }
 
@@ -1691,6 +1702,13 @@ document.querySelectorAll('.speed-btn').forEach(b => {
     currentSpeed = parseFloat(b.dataset.speed);
     play();
   });
+});
+
+$('#autoBtn').addEventListener('click', () => {
+  autoPlay = !autoPlay;
+  const btn = $('#autoBtn');
+  btn.textContent = autoPlay ? 'autoplay · on' : 'autoplay · off';
+  btn.classList.toggle('active', autoPlay);
 });
 
 document.querySelectorAll('.deck-btn').forEach(b => {
