@@ -1486,6 +1486,7 @@ let pos = 0;
 let currentSpeed = 1;
 let audio = null;
 let revealMode = false;
+let glossMode = false;
 
 const $ = s => document.querySelector(s);
 
