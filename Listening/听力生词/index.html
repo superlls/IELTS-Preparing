@@ -1456,6 +1456,7 @@ let pos = 0;
 let currentSpeed = 1;
 let audio = null;
 let revealMode = false;
+let glossMode = false;
 
 const $ = s => document.querySelector(s);
 
@@ -1503,6 +1504,7 @@ function reveal() {
 
 function hideWord() {
   revealMode = false;
+  glossMode = false;
   showPlayStage();
 }
 
@@ -1532,6 +1534,7 @@ async function loadMeaning() {
     text.innerHTML = renderGloss(cache[word]);
     m.classList.add('show');
     btn.style.display = 'none';
+    glossMode = true;
     return;
   }
 
@@ -1557,6 +1560,7 @@ async function loadMeaning() {
     cache[word] = data;
     localStorage.setItem(CACHE_KEY, JSON.stringify(cache));
     text.innerHTML = renderGloss(data);
+    glossMode = true;
   } catch (e) {
     text.textContent = 'failed to load — check the network';
   }
@@ -1615,7 +1619,12 @@ function update() {
   }
   const empty = document.getElementById('deckEmpty');
   if (empty) empty.style.display = 'none';
-  if (revealMode) showWordStage(); else showPlayStage();
+  if (revealMode) {
+    showWordStage();
+    if (glossMode) loadMeaning();
+  } else {
+    showPlayStage();
+  }
   refreshStarBtn();
   const cur = pad(pos + 1), tot = pad(WORDS.length);
   $('#counter').textContent = `${cur} / ${tot}`;
@@ -1653,7 +1662,6 @@ async function toggleStar() {
 function go(d) {
   if (!WORDS.length) return;
   pos = (pos + d + WORDS.length) % WORDS.length;
-  revealMode = false;
   update();
 }
 
@@ -1689,6 +1697,7 @@ document.querySelectorAll('.deck-btn').forEach(b => {
     localStorage.setItem(MODE_KEY, mode);
     pos = 0;
     revealMode = false;
+    glossMode = false;
     applyMode();
     update();
   });
