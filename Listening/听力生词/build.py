@@ -1483,7 +1483,15 @@ const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
 let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
+let shuffled = localStorage.getItem(SHUFFLE_KEY) === '1';
 let order = WORDS.map((_, i) => i);
+
+function shuffleOrder() {
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+}
 let pos = 0;
 let currentSpeed = 1;
 let audio = null;
