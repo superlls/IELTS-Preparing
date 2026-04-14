@@ -882,7 +882,6 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
 #shuffleBtn:hover { background: var(--ink); color: var(--paper); transform: translate(-2px, -2px); }
 #shuffleBtn:active { transform: translate(1px, 1px); box-shadow: 1px 2px 0 -1px var(--ink), 1px 2px 0 0 var(--paper); }
 #shuffleBtn::before { content: '⁂'; font-family: "Fraunces", serif; font-size: 14px; margin-right: 8px; }
-#shuffleBtn.active { background: var(--ink); color: var(--paper); }
 
 .imprint {
   text-align: center;
@@ -1438,7 +1437,7 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
   <div class="rule-thick-bottom"></div>
   <div class="controls">
     <button class="ctrl-btn" id="prevBtn">← previous</button>
-    <button class="ctrl-btn" id="shuffleBtn" title="左键：打乱 / 再次打乱　右键：恢复顺序">shuffle the deck</button>
+    <button class="ctrl-btn" id="shuffleBtn">shuffle the deck</button>
     <button class="ctrl-btn" id="nextBtn">next →</button>
   </div>
   <div class="imprint">
@@ -1478,20 +1477,11 @@ let STARRED = new Set(BOOTSTRAP.starred);
 let WORDS = ALL_WORDS.slice();
 const CACHE_KEY = 'listening-vocab-cache-v2';
 const MODE_KEY = 'listening-deck-mode-v1';
-const SHUFFLE_KEY = 'listening-shuffle-v1';
 const cache = JSON.parse(localStorage.getItem(CACHE_KEY) || '{}');
 const hasServer = location.protocol === 'http:' || location.protocol === 'https:';
 
 let mode = localStorage.getItem(MODE_KEY) === 'starred' ? 'starred' : 'all';
-let shuffled = localStorage.getItem(SHUFFLE_KEY) === '1';
 let order = WORDS.map((_, i) => i);
-
-function shuffleOrder() {
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-}
 let pos = 0;
 let currentSpeed = 1;
 let audio = null;
@@ -1609,16 +1599,10 @@ function applyMode() {
     ? ALL_WORDS.filter(w => STARRED.has(w))
     : ALL_WORDS.slice();
   order = WORDS.map((_, i) => i);
-  if (shuffled) shuffleOrder();
   if (pos >= WORDS.length) pos = 0;
   document.querySelectorAll('.deck-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
-  const sb = $('#shuffleBtn');
-  if (sb) {
-    sb.classList.toggle('active', shuffled);
-    sb.textContent = shuffled ? 'shuffled · reshuffle' : 'shuffle the deck';
-  }
   $('#starredCount').textContent = STARRED.size;
 }
 
@@ -1712,28 +1696,11 @@ $('#detailBtn').addEventListener('click', loadMeaning);
 $('#prevBtn').addEventListener('click', () => go(-1));
 $('#nextBtn').addEventListener('click', () => go(1));
 $('#shuffleBtn').addEventListener('click', () => {
-  if (!shuffled) {
-    shuffled = true;
-    localStorage.setItem(SHUFFLE_KEY, '1');
-    order = WORDS.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
   }
-  shuffleOrder();
   pos = 0;
-  const sb = $('#shuffleBtn');
-  sb.classList.add('active');
-  sb.textContent = 'shuffled · reshuffle';
-  update();
-});
-
-$('#shuffleBtn').addEventListener('contextmenu', (e) => {
-  e.preventDefault();
-  shuffled = false;
-  localStorage.removeItem(SHUFFLE_KEY);
-  order = WORDS.map((_, i) => i);
-  pos = 0;
-  const sb = $('#shuffleBtn');
-  sb.classList.remove('active');
-  sb.textContent = 'shuffle the deck';
   update();
 });
 
