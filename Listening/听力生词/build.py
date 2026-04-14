@@ -1534,6 +1534,7 @@ function reveal() {
 
 function hideWord() {
   revealMode = false;
+  glossMode = false;
   showPlayStage();
 }
 
