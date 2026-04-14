@@ -1580,10 +1580,16 @@ function applyMode() {
     ? ALL_WORDS.filter(w => STARRED.has(w))
     : ALL_WORDS.slice();
   order = WORDS.map((_, i) => i);
+  if (shuffled) shuffleOrder();
   if (pos >= WORDS.length) pos = 0;
   document.querySelectorAll('.deck-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.mode === mode);
   });
+  const sb = $('#shuffleBtn');
+  if (sb) {
+    sb.classList.toggle('active', shuffled);
+    sb.textContent = shuffled ? 'shuffled · reshuffle' : 'shuffle the deck';
+  }
   $('#starredCount').textContent = STARRED.size;
 }
 
