@@ -1727,6 +1727,7 @@ document.querySelectorAll('.deck-btn').forEach(b => {
     localStorage.setItem(MODE_KEY, mode);
     pos = 0;
     revealMode = false;
+    glossMode = false;
     applyMode();
     update();
   });
