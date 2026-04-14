@@ -1333,6 +1333,13 @@ code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 0.88em
     </div>
 
     <div class="meta-block">
+      <div class="meta-label">Auto</div>
+      <div class="tempo-toggle">
+        <button class="tempo-btn" id="autoBtn">autoplay · off</button>
+      </div>
+    </div>
+
+    <div class="meta-block">
       <div class="meta-label">Procedure</div>
       <div class="procedure">
         <div class="step"><span class="num">Ⅰ.</span><span class="desc">audition by ear</span></div>
